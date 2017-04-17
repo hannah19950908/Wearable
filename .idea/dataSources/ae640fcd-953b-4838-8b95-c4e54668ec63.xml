@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="wearable@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.1">
+    <root id="1"/>
+    <schema id="2" parent="1" name="wearable">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="information_schema"/>
+    <schema id="4" parent="1" name="mysql"/>
+    <schema id="5" parent="1" name="performance_schema"/>
+    <schema id="6" parent="1" name="phpmyadmin"/>
+    <schema id="7" parent="1" name="root"/>
+    <schema id="8" parent="1" name="sys"/>
+    <table id="9" parent="2" name="acc"/>
+    <table id="10" parent="2" name="user"/>
+    <column id="11" parent="9" name="acountNumber">
+      <Position>1</Position>
+      <DataType>varchar(10)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="12" parent="9" name="time">
+      <Position>2</Position>
+      <DataType>date|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="13" parent="9" name="accX">
+      <Position>3</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="14" parent="9" name="accY">
+      <Position>4</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="15" parent="9" name="accZ">
+      <Position>5</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="16" parent="9" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>acountNumber</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="17" parent="10" name="accountNumber">
+      <Position>1</Position>
+      <DataType>varchar(10)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="18" parent="10" name="userName">
+      <Position>2</Position>
+      <DataType>varchar(20)|0</DataType>
+    </column>
+    <column id="19" parent="10" name="phone">
+      <Position>3</Position>
+      <DataType>varchar(11)|0</DataType>
+    </column>
+    <column id="20" parent="10" name="relativeName">
+      <Position>4</Position>
+      <DataType>varchar(20)|0</DataType>
+    </column>
+    <column id="21" parent="10" name="relativePhone">
+      <Position>5</Position>
+      <DataType>varchar(11)|0</DataType>
+    </column>
+    <column id="22" parent="10" name="email">
+      <Position>6</Position>
+      <DataType>varchar(50)|0</DataType>
+    </column>
+    <column id="23" parent="10" name="password">
+      <Position>7</Position>
+      <DataType>varchar(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="24" parent="10" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>accountNumber</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="25" parent="10" name="user_ibfk_1">
+      <ColNames>accountNumber</ColNames>
+      <RefSchemaName>wearable</RefSchemaName>
+      <RefTableName>acc</RefTableName>
+      <RefColNames>acountNumber</RefColNames>
+    </foreign-key>
+  </database-model>
+</dataSource>
