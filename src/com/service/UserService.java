@@ -31,6 +31,7 @@ public class UserService {
             userEntity.setRelativeName(relativeName);
             userEntity.setRelativePhone(relativePhone);
             userEntity.setEmail(email);
+            userEntity.toString();
             userDao.add(userEntity);
             return true;
         }

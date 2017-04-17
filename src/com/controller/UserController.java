@@ -5,7 +5,6 @@ import com.service.UserService;
 import com.util.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -61,6 +60,7 @@ public class UserController {
         Map map=JSONUtil.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         UserEntity userEntity=userService.findByAccountNumber(accountNumber);
+        map.put("status",1);
         if(userEntity==null){
             String password = sha256Crypt(((String) map.get("password")).getBytes());
             String userName=(String)map.get("userName");
@@ -68,12 +68,11 @@ public class UserController {
             String relativeName=(String)map.get("relativeName");
             String relativePhone=(String)map.get("relativePhone");
             String email=(String)map.get("email");
-            userService.addByInformation(accountNumber,password,userName,phone,relativeName,relativePhone,email);
-            map.put("status",0);
-            model.addAttribute("accountNumber",accountNumber);
-            model.addAttribute("password",password);
-        }else{
-            map.put("status",1);
+            if(userService.addByInformation(accountNumber,password,userName,phone,relativeName,relativePhone,email)){
+                map.put("status",0);
+                model.addAttribute("accountNumber",accountNumber);
+                model.addAttribute("password",password);
+            }
         }
         return JSONUtil.toJSON(map);
     }
@@ -83,6 +82,7 @@ public class UserController {
         Map map=JSONUtil.parseMap(mapString);
         String oldPassword = sha256Crypt(((String) map.get("oldPassword")).getBytes());
         String password=userService.findByAccountNumber(accountNumber).getPassword();
+        map.put("status",1);
         if(oldPassword==password){
             String newPassword = sha256Crypt(((String) map.get("newPassword")).getBytes());
             String userName=(String)map.get("userName");
@@ -91,10 +91,9 @@ public class UserController {
             String relativePhone=(String)map.get("relativePhone");
             String email=(String)map.get("email");
             model.addAttribute("password",newPassword);
-            userService.updateByInformation(accountNumber,oldPassword,newPassword,userName,phone,relativeName,relativePhone,email);
-            map.put("status",0);
-        }else {
-            map.put("status",1);
+            if(userService.updateByInformation(accountNumber,oldPassword,newPassword,userName,phone,relativeName,relativePhone,email)){
+                map.put("status",0);
+            }
         }
         return JSONUtil.toJSON(map);
     }
@@ -122,11 +121,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "delete",method = RequestMethod.POST)
-    public String delete(String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception{
+    public String delete(String mapString, @ModelAttribute("accountNumber") String accountNumber, Model model) throws Exception{
         Map map=JSONUtil.parseMap(mapString);
-        UserEntity userEntity=userService.findByAccountNumberAndPassword(accountNumber,(String)map.get("password"));
-        if(userEntity!=null){
-            
+        if(userService.deleteByAccountNumberAndPassword(accountNumber,(String)map.get("password"))){
+            map.put("status",0);
+            model.addAttribute("acountNumber","");
+        }else{
+            map.put("status",1);
         }
         return JSONUtil.toJSON(map);
     }

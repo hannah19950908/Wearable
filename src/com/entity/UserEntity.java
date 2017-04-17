@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by 63289 on 2017/4/17.
  */
 @Entity
-@Table(name = "user", schema = "wearable", catalog = "")
+@Table(name = "myUser", schema = "wearable", catalog = "")
 public class UserEntity {
     private String accountNumber;
     private String userName;
@@ -77,7 +77,7 @@ public class UserEntity {
     }
 
     @Basic
-    @Column(name = "password", nullable = false, length = 50)
+    @Column(name = "password", nullable = false, length = 100)
     public String getPassword() {
         return password;
     }
