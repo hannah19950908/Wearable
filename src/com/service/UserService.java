@@ -40,12 +40,17 @@ public class UserService {
         UserEntity userEntity=new UserEntity();
         userEntity.setAccountNumber(accountNumber);
         userEntity.setPassword(password);
-        return userDao.findByExample(userEntity).get(0);
+        List list=userDao.findByExample(userEntity);
+        return list.isEmpty()?null:(UserEntity) list.get(0);
     }
-    public List<UserEntity> findByAccountNumber(String accountNumber){
+
+    public UserEntity findByAccountNumber(String accountNumber){
         UserEntity userEntity=new UserEntity();
-        return userDao.findByExample(userEntity);
+        userEntity.setAccountNumber(accountNumber);
+        List list=userDao.findByExample(userEntity);
+        return list.isEmpty()?null:(UserEntity) list.get(0);
     }
+
     public boolean updateByInformation(String accountNumber, String oldPassword, String newPassword, String userName, String phone, String relativeName,
                                     String relativePhone, String email){
         UserEntity userEntity=new UserEntity();
