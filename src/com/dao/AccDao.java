@@ -25,7 +25,9 @@ public class AccDao {
         hibernateTemplate.save(accEntity);
     }
 
-    public List<AccEntity> findByExample(AccEntity accEntity){
+    public List findByExample(AccEntity accEntity){
+        if(accEntity.getAcountNumber()!=null)
+            return hibernateTemplate.find("from AccEntity accEntity where accEntity.acountNumber="+accEntity.getAcountNumber());
         return hibernateTemplate.findByExample(accEntity);
     }
 

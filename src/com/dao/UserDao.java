@@ -21,18 +21,23 @@ public class UserDao {
     }
 
     @Transactional
-    public void add(UserEntity userEntity){
+    public void add(UserEntity userEntity) {
         hibernateTemplate.save(userEntity);
     }
-    public List<UserEntity> findByExample(UserEntity userEntity){
+
+    public List findByExample(UserEntity userEntity) {
+        if (userEntity.getAccountNumber() != null)
+            return hibernateTemplate.find("from UserEntity userEntity where userEntity.accountNumber=" + userEntity.getAccountNumber());
         return hibernateTemplate.findByExample(userEntity);
     }
+
     @Transactional
-    public void update(UserEntity userEntity){
+    public void update(UserEntity userEntity) {
         hibernateTemplate.update(userEntity);
     }
+
     @Transactional
-    public void delete(UserEntity userEntity){
+    public void delete(UserEntity userEntity) {
         hibernateTemplate.delete(userEntity);
     }
 }
