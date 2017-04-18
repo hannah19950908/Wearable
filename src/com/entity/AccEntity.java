@@ -1,21 +1,22 @@
 package com.entity;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
- * Created by 63289 on 2017/4/17.
+ * Created by 63289 on 2017/4/18.
  */
 @Entity
 @Table(name = "acc", schema = "wearable", catalog = "")
 public class AccEntity {
     private String acountNumber;
-    private Date time;
+    private Timestamp time;
     private int accX;
     private int accY;
     private int accZ;
+    private int id;
 
-    @Id
+    @Basic
     @Column(name = "acountNumber", nullable = false, length = 10)
     public String getAcountNumber() {
         return acountNumber;
@@ -27,11 +28,11 @@ public class AccEntity {
 
     @Basic
     @Column(name = "time", nullable = false)
-    public Date getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 
@@ -65,6 +66,17 @@ public class AccEntity {
         this.accZ = accZ;
     }
 
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,6 +87,7 @@ public class AccEntity {
         if (accX != accEntity.accX) return false;
         if (accY != accEntity.accY) return false;
         if (accZ != accEntity.accZ) return false;
+        if (id != accEntity.id) return false;
         if (acountNumber != null ? !acountNumber.equals(accEntity.acountNumber) : accEntity.acountNumber != null)
             return false;
         if (time != null ? !time.equals(accEntity.time) : accEntity.time != null) return false;
@@ -89,6 +102,7 @@ public class AccEntity {
         result = 31 * result + accX;
         result = 31 * result + accY;
         result = 31 * result + accZ;
+        result = 31 * result + id;
         return result;
     }
 }
