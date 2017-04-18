@@ -13,7 +13,6 @@
           <element id="library" level="project" name="commons-codec-1.10" />
           <element id="library" level="project" name="mysql-connector-java-5.1.40-bin" />
           <element id="library" level="project" name="json-lib-2.4-jdk15" />
-          <element id="library" level="project" name="spring-session-1.3.0.RELEASE" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="Wearable/web/Web" />
