@@ -128,7 +128,7 @@ public class UserController {
     }
     //删除账户
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public String delete(String mapString, @ModelAttribute("accountNumber") String accountNumber, ModelMap model) throws Exception {
+    public String delete(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         if (userService.deleteByAccountNumberAndPassword(accountNumber, (String) map.get("password"))) {
             map.put("status", 0);
