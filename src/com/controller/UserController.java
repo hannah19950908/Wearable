@@ -120,6 +120,7 @@ public class UserController {
     @RequestMapping("logout")
     public String logout(@ModelAttribute("accountNumber")String accountNumber, ModelMap model) throws Exception {
         Map map = new HashMap();
+        model.addAttribute("accountNumber",null);
         model.remove("accountNumber");
         if(model.get("accountNumber")==null){
             map.put("status", 0);
