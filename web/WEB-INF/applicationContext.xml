@@ -40,6 +40,7 @@
             <list>
                 <value>com.entity.UserEntity</value>
                 <value>com.entity.AccEntity</value>
+                <value>com.entity.MeasureEntity</value>
             </list>
         </property>
     </bean>
