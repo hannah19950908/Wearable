@@ -47,7 +47,7 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/wearable" />
+        <property name="url" value="jdbc:mysql://ecs.jimstar.top:3306/wearable?useSSL=false" />
         <property name="username" value="cielo" />
         <property name="password" value="hahaschool" />
     </bean>

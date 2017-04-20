@@ -8,7 +8,7 @@
 - 若请求中没有accountNumber参数，即说明需要session中存储了accountNumber参数，请成功注册/成功登录后调用。
 - 请求时，允许JSON结构中有冗余信息，服务器会直接无视，但返回的内容中也会有该冗余信息。
 - 对服务器API文档有任何疑问，请联系服务器代码作者孙博宇 邮箱：cielosun@outlook.com qq:632898354。
-- 目前User部分的开发和测试已经完成，Measure部分开发完成，还在测试中。
+- 目前开发和测试已经完成。
 
 请求样例：
 对于多个属性：
@@ -93,12 +93,12 @@ req:
 
 res:
 - 一个名为user的对象，其中属性为:
-String accountNumber,
-String userName,
-String phone,
-String relativeName,
-String relativePhone,
-String email
+1. String accountNumber 用户账号
+2. String userName 用户名
+3. String phone 用户电话
+4. String relativeName 用户亲属名
+5. String relativePhone 用户亲属电话
+6. String email 用户email
 
 示例：
 ```JSON
@@ -133,7 +133,6 @@ res:
 # 数据测量部分
 
 以下若说明为measure对象，则其结构为：
-
 ```JSON
 {
     "accountNumber":"002",
@@ -145,6 +144,15 @@ res:
     "id":1
 }
  ```
+各属性的类型为：
+ - String accountNumber 用户账号
+ - Long commitTime 由时间戳转换而成的UNIX毫秒数
+ - String device 设备MAC
+ - Integer step 步数
+ - Integer distance 距离（单位：米）
+ - Integer heart 心率
+ - int id 自动生成，不需要调用
+ 
 以下若说明为measures列表，则其结构为：
 ```JSON
 {
@@ -153,7 +161,8 @@ res:
                         "accountNumber":"002",
                         "commitTime":1492659233000,
                         "device":"BE-83-85-13-EB-1D",
-                        "step":386,"distance":10,
+                        "step":386,
+                        "distance":10,
                         "heart":70,
                         "id":1
                     },
@@ -161,7 +170,8 @@ res:
                         "accountNumber":"002",
                         "commitTime":1492661406000,
                         "device":"BC-83-85-13-EA-1C",
-                        "step":429,"distance":11,
+                        "step":429,
+                        "distance":11,
                         "heart":65,
                         "id":2
                     }
@@ -169,6 +179,9 @@ res:
     "status":0
 }
 ```
+
+对于所有时间请求，请以UNIX毫秒数（例如：1492661406000）的形式发送。
+
 ## /Measure/getAll
 
 获取当前用户的所有数据，按commitTime正序排序，若获取成功为0。
@@ -183,18 +196,18 @@ res:
 获取当前用户某段时间的所有数据，按commitTime正序排序，若获取成功为0。
 
 req:
-- Timestamp fromTime
-- Timestamp toTime
+- Long fromTime
+- Long toTime
 
 res:
 - 名为measures的measure对象列表。
 
-## /Measure/getAllFromTime
+## /Measure/getAllByFromTime
 
 获取当前用户从某个时间至今的所有数据，按commitTime正序排序，若获取成功为0。
 
 req:
-- Timestamp fromTime
+- Long fromTime
 
 res:
 - 名为measures的measure对象列表。
@@ -222,7 +235,7 @@ res:
 获取当前用户某日的所有数据，按commitTime正序排序，若获取成功为0。
 
 req:
-- Timestamp timestamp
+- Long timestamp
 
 res:
 - 名为measures的measure对象列表。
@@ -232,8 +245,8 @@ res:
 获取当前用户某段日期中的每天的最后的数据，按commitTime正序排序，若获取成功为0。
 
 req:
-- Timestamp fromTime
-- Timestamp toTime
+- Long fromTime
+- Long toTime
 
 res:
 - 名为measures的measure对象列表。

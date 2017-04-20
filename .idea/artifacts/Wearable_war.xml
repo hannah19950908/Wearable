@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="Wearable:war">
+    <output-path>$PROJECT_DIR$/out/artifacts/Wearable_war</output-path>
+    <root id="archive" name="Wearable_war.war">
+      <element id="artifact" artifact-name="Wearable:war exploded" />
+    </root>
+  </artifact>
+</component>

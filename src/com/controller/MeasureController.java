@@ -43,13 +43,13 @@ private final MeasureService measureService;
     @RequestMapping(value = "getByDate",method = RequestMethod.POST)
     public String getByDate(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception{
         Map map=JSONUtil.parseMap(mapString);
-        List list=measureService.findByAccountNumberAndDate(accountNumber,(Timestamp)map.get("timestamp"));
+        List list=measureService.findByAccountNumberAndDate(accountNumber,new Timestamp((Long)map.get("timestamp")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }
     @RequestMapping(value = "getEachDateLatestByDateRange",method = RequestMethod.POST)
-    public String getEachDateLatestByDateRange(@RequestBody String mapString, @ModelAttribute("accoutNumber") String accountNumber) throws Exception{
+    public String getEachDateLatestByDateRange(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception{
         Map map=JSONUtil.parseMap(mapString);
-        List list=measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber,(Timestamp)map.get("fromTime"),(Timestamp)map.get("toTime"));
+        List list=measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber,new Timestamp((Long)map.get("fromTime")),new Timestamp((Long)map.get("toTime")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }
     @RequestMapping("getAll")
@@ -61,13 +61,13 @@ private final MeasureService measureService;
     @RequestMapping(value = "getAllByTimeRange",method = RequestMethod.POST)
     public String getAllByTimeRange(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception{
         Map map=JSONUtil.parseMap(mapString);
-        List list=measureService.findByAccountNumberAndCommitTime(accountNumber,(Timestamp)map.get("fromTime"),(Timestamp)map.get("toTime"));
+        List list=measureService.findByAccountNumberAndCommitTime(accountNumber,new Timestamp((Long)map.get("fromTime")),new Timestamp((Long)map.get("toTime")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }
-    @RequestMapping(value = "getAllFromTime",method = RequestMethod.POST)
-    public String getAllFromTime(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception{
+    @RequestMapping(value = "getAllByFromTime",method = RequestMethod.POST)
+    public String getAllByFromTime(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception{
         Map map=JSONUtil.parseMap(mapString);
-        List list=measureService.findByAccountNumberAndFromTime(accountNumber,(Timestamp)map.get("fromTime"));
+        List list=measureService.findByAccountNumberAndFromTime(accountNumber,new Timestamp((Long)map.get("fromTime")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }
 }

@@ -118,4 +118,17 @@ public class MeasureEntity {
         result = 31 * result + id;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MeasureEntity{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", commitTime=" + commitTime +
+                ", device='" + device + '\'' +
+                ", step=" + step +
+                ", distance=" + distance +
+                ", heart=" + heart +
+                ", id=" + id +
+                '}';
+    }
 }

@@ -63,10 +63,11 @@ public class MeasureService {
     }
     //查询某账户一段日期中每天的最后一条数据，参数为2个LocalDate
     private List<MeasureEntity> findTheLatestOfDateByAccountNumberAndDateRange(String accountNumber,LocalDate fromLocalDate,LocalDate toLocalDate){
-        List<MeasureEntity> list=new ArrayList<MeasureEntity>();
-        for(LocalDate day=fromLocalDate;day!=toLocalDate.plusDays(1);day=day.plusDays(1)){
+        System.out.println(accountNumber);
+        List<MeasureEntity> list=new ArrayList<>();
+        for(Long i=new Long(0);i<=toLocalDate.toEpochDay()-fromLocalDate.toEpochDay();++i){
             MeasureEntity measureEntity = measureDao.findTheLatestByAccountNumberAndTime
-                    (accountNumber,Timestamp.valueOf(day.atStartOfDay()),Timestamp.valueOf(day.plusDays(1).atStartOfDay()));
+                    (accountNumber,Timestamp.valueOf(fromLocalDate.plusDays(i).atStartOfDay()),Timestamp.valueOf(fromLocalDate.plusDays(i+1).atStartOfDay()));
             if(measureEntity!=null){
                 list.add(measureEntity);
             }
