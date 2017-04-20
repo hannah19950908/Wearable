@@ -1,5 +1,8 @@
 # 公共说明
 
+- 测试端口的基地址为http://ecs.jimstar.top:8080/Wearable_war/，本文档中地址均为该基地址的相对地址，如，注册API为
+http://ecs.jimstar.top:8080/Wearable_war/User/join
+- 需要管理数据库时，管理地址https://ecs.jimstar.top/phpmyadmin 用户名cielo，密码hahaschool。
 - 所有API均会返回status属性，值为0表示成功，通常值为1表示失败（若有多种失败情况会特殊说明）。以下文档中不再说明。
 - 所有API的request内容都会在response中。
 - 所有请求参数和可选请求参数都必须是JSON格式，即使仅仅只有一条内容，不接受但个属性的POST或GET方法，只接受JSON。
