@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @CrossOrigin(value = "*",maxAge = 3600)
 @RestController
-@RequestMapping("Measure")
+@RequestMapping(value = "Measure",produces="application/json;charset=UTF-8")
 @SessionAttributes("accountNumber")
 public class MeasureController {
 private final MeasureService measureService;

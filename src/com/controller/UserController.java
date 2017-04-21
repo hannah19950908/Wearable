@@ -18,7 +18,7 @@ import static com.util.DigestUtil.Md5Encoder;
  */
 @CrossOrigin(value = "*",maxAge = 3600)
 @RestController
-@RequestMapping("User")
+@RequestMapping(value = "User",produces="application/json;charset=UTF-8")
 @SessionAttributes("accountNumber")
 public class UserController {
     private final UserService userService;
