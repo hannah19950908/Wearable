@@ -16,6 +16,7 @@ import static com.util.DigestUtil.Md5Encoder;
 /**
  * Created by 63289 on 2017/2/25.
  */
+@CrossOrigin(value = "*",maxAge = 3600)
 @RestController
 @RequestMapping("User")
 @SessionAttributes("accountNumber")

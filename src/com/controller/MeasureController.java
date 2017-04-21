@@ -15,6 +15,7 @@ import java.util.Map;
 /**
  * Created by 63289 on 2017/4/19.
  */
+@CrossOrigin(value = "*",maxAge = 3600)
 @RestController
 @RequestMapping("Measure")
 @SessionAttributes("accountNumber")
