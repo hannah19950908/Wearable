@@ -13,6 +13,7 @@
           <element id="library" level="project" name="commons-codec-1.10" />
           <element id="library" level="project" name="mysql-connector-java-5.1.40-bin" />
           <element id="library" level="project" name="jackson-2.8.5" />
+          <element id="library" level="project" name="jackson-core-2.8.5" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="Wearable/web/Web" />

@@ -4,7 +4,9 @@
     <root id="archive" name="Wearable_war.war">
       <element id="artifact" artifact-name="Wearable:war exploded" />
       <element id="directory" name="WEB-INF">
-        <element id="directory" name="lib" />
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="jackson-core-2.8.5" />
+        </element>
       </element>
     </root>
   </artifact>
