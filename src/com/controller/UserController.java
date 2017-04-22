@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String login(@RequestBody String mapString, Model model) throws Exception {
+    public String login(@RequestBody String mapString, Model model, HttpSession session) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         String password = Md5Encoder((String) map.get("password"));
