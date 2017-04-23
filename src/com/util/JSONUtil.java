@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,6 +22,6 @@ public class JSONUtil {
     }
 
     public static Map<String, Object> parseMap(String jsonStr) throws IOException {
-        return objectMapper.readValue(jsonStr, Map.class);
+        return (jsonStr==null||jsonStr.isEmpty())? new HashMap(): objectMapper.readValue(jsonStr, Map.class);
     }
 }

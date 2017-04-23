@@ -1,3 +1,8 @@
+# 功能更新
+
+## 2017-4-23
+
+- 为了后续对Android等可能不支持session的前端的开发支持，现实现了纯RESTful设计模式，原web api不变，均可继续使用。文档中areq为更新后，不能使用session的设备需要添加的请求。
 
 # 公共说明
 
@@ -8,7 +13,7 @@ http://ecs.jimstar.top:8080/Wearable_war/User/join
 - 所有API的request内容都会在response中。
 - 所有请求参数和可选请求参数都必须是JSON格式，即使仅仅只有一条内容，不接受但个属性的POST或GET方法，只接受JSON。
 - 除不需要参数的方法（可为POST或GET）外，所有方法均为POST方法。
-- req为必须请求参数，creq为可选请求参数，res为返回参数。
+- req为必须请求参数，areq为不能使用session的设备的必须请求，creq为可选请求参数，res为返回参数。
 - 若请求中没有accountNumber参数，即说明需要session中存储了accountNumber参数，请成功注册/成功登录后调用。
 - 请求时，允许JSON结构中有冗余信息，服务器会直接无视，但返回的内容中也会有该冗余信息。
 - 对服务器API文档有任何疑问，请联系服务器代码作者孙博宇 邮箱：cielosun@outlook.com qq:632898354。
@@ -79,6 +84,9 @@ res:
 req:
 - String oldPassword
 
+areq:
+- String accountNumber
+
 creq:
 - String newPassword
 - String userName
@@ -94,6 +102,9 @@ res:
 显示当前用户的用户数据。成功为0。
 
 req:
+
+areq:
+- String accountNumber
 
 res:
 - 一个名为user的对象，其中属性为:
@@ -123,6 +134,9 @@ res:
 登出，由于清除session的方法有延时，请前端用跳转并重置到需要登录的状态帮忙掩护一下,登出成功返回0。
 
 req:
+
+areq:
+- String accountNumber
 
 res:
 
@@ -192,6 +206,9 @@ res:
 
 req:
 
+areq:
+- String accountNumber
+
 res:
 - 名为measures的measure对象列表。
 
@@ -203,6 +220,9 @@ req:
 - Long fromTime
 - Long toTime
 
+areq:
+- String accountNumber
+
 res:
 - 名为measures的measure对象列表。
 
@@ -213,6 +233,12 @@ res:
 req:
 - Long fromTime
 
+areq:
+- String accountNumber
+
+areq:
+- String accountNumber
+
 res:
 - 名为measures的measure对象列表。
 
@@ -222,6 +248,9 @@ res:
 
 req:
 
+areq:
+- String accountNumber
+
 res:
 - 名为measure的measure对象。
 
@@ -230,6 +259,9 @@ res:
 获取当前用户今日的所有数据，按commitTime正序排序，若获取成功为0。
 
 req:
+
+areq:
+- String accountNumber
 
 res:
 - 名为measures的measure对象列表。
@@ -241,6 +273,9 @@ res:
 req:
 - Long timestamp
 
+areq:
+- String accountNumber
+
 res:
 - 名为measures的measure对象列表。
 
@@ -251,6 +286,9 @@ res:
 req:
 - Long fromTime
 - Long toTime
+
+areq:
+- String accountNumber
 
 res:
 - 名为measures的measure对象列表。

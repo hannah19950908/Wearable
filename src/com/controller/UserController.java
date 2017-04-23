@@ -9,7 +9,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.util.DigestUtil.Md5Encoder;
@@ -85,13 +84,19 @@ public class UserController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public String edit(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber, Model model) throws Exception {
+    public String edit(@RequestBody String mapString,ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String oldPassword = Md5Encoder((String) map.get("oldPassword"));
+        String accountNumber=(String) model.get("accountNumber");
+        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
         String password = userService.findByAccountNumber(accountNumber).getPassword();
         map.put("status", 1);
         if (oldPassword.equals(password)) {
-            String newPassword = Md5Encoder((String) map.get("newPassword"));
+            String newPasswordNotEncoded=(String) map.get("newPassword");
+            String newPassword=null;
+            if(newPasswordNotEncoded!=null){
+                newPassword = Md5Encoder(newPasswordNotEncoded);
+            }
             String userName = (String) map.get("userName");
             String phone = (String) map.get("phone");
             String relativeName = (String) map.get("relativeName");
@@ -105,8 +110,10 @@ public class UserController {
     }
 
     @RequestMapping("display")
-    public String display(@ModelAttribute("accountNumber") String accountNumber) throws Exception {
-        Map map = new HashMap();
+    public String display(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
+        Map map = JSONUtil.parseMap(mapString);
+        String accountNumber=(String) model.get("accountNumber");
+        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
         userEntity.setPassword(null);
         if (userEntity == null) {
@@ -119,8 +126,10 @@ public class UserController {
     }
     //暂时不可用，可以做伪登出。
     @RequestMapping("logout")
-    public String logout(@ModelAttribute("accountNumber")String accountNumber, ModelMap model) throws Exception {
-        Map map = new HashMap();
+    public String logout(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
+        Map map = JSONUtil.parseMap(mapString);
+        String accountNumber=(String) model.get("accountNumber");
+        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
         model.addAttribute("accountNumber",null);
         model.remove("accountNumber");
         if(model.get("accountNumber")==null){
@@ -130,8 +139,10 @@ public class UserController {
     }
     //删除账户
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public String delete(@RequestBody String mapString, @ModelAttribute("accountNumber") String accountNumber) throws Exception {
+    public String delete(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
+        String accountNumber=(String) model.get("accountNumber");
+        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
         if (userService.deleteByAccountNumberAndPassword(accountNumber, (String) map.get("password"))) {
             map.put("status", 0);
         } else {
