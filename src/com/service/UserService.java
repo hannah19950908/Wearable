@@ -41,8 +41,6 @@ public class UserService {
         UserEntity userEntity=new UserEntity();
         userEntity.setPassword(password);
         List list=userDao.findByExample(userEntity);
-        userEntity.setAccountNumber(accountNumber);
-        list.retainAll(userDao.findByExample(userEntity));
         return list.isEmpty()?null:(UserEntity) list.get(0);
     }
 

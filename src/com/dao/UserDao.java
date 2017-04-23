@@ -26,9 +26,12 @@ public class UserDao {
     }
 
     public List findByExample(UserEntity userEntity) {
-        if (userEntity.getAccountNumber() != null)
-            return hibernateTemplate.find("from UserEntity userEntity where userEntity.accountNumber=" + userEntity.getAccountNumber());
-        return hibernateTemplate.findByExample(userEntity);
+        List list = hibernateTemplate.findByExample(userEntity);
+        if (userEntity.getAccountNumber() != null) {
+            list.retainAll(hibernateTemplate.find("from UserEntity userEntity where userEntity.accountNumber=?",
+                    new Object[]{userEntity.getAccountNumber()}));
+        }
+        return list;
     }
 
     @Transactional
