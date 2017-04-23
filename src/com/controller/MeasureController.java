@@ -2,6 +2,7 @@ package com.controller;
 
 import com.entity.MeasureEntity;
 import com.service.MeasureService;
+import com.service.UserService;
 import com.util.JSONUtil;
 import com.util.ListToMapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,22 @@ import java.util.Map;
 @SessionAttributes("accountNumber")
 public class MeasureController {
     private final MeasureService measureService;
+    private final UserService userService;
 
     @Autowired
-    public MeasureController(MeasureService measureService) {
+    public MeasureController(MeasureService measureService, UserService userService) {
         this.measureService = measureService;
+        this.userService = userService;
     }
 
     @RequestMapping("getLatest")
     public String getLatest(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         MeasureEntity measureEntity = measureService.findTheLatestByAccountNumber(accountNumber);
         if (measureEntity != null) {
             map.put("status", 0);
@@ -43,8 +49,11 @@ public class MeasureController {
     @RequestMapping("getToday")
     public String getToday(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         List list = measureService.findTodayDataByAccountNumber(accountNumber);
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
     }
@@ -52,8 +61,11 @@ public class MeasureController {
     @RequestMapping(value = "getByDate", method = RequestMethod.POST)
     public String getByDate(@RequestBody String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         List list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp((Long) map.get("timestamp")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }
@@ -61,8 +73,11 @@ public class MeasureController {
     @RequestMapping(value = "getEachDateLatestByDateRange", method = RequestMethod.POST)
     public String getEachDateLatestByDateRange(@RequestBody String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         List list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber,
                 new Timestamp((Long) map.get("fromTime")), new Timestamp((Long) map.get("toTime")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
@@ -71,8 +86,11 @@ public class MeasureController {
     @RequestMapping("getAll")
     public String getAll(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         List list = measureService.findAllDataByAccountNumber(accountNumber);
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }
@@ -80,8 +98,11 @@ public class MeasureController {
     @RequestMapping(value = "getAllByTimeRange", method = RequestMethod.POST)
     public String getAllByTimeRange(@RequestBody String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         List list = measureService.findByAccountNumberAndCommitTime(accountNumber,
                 new Timestamp((Long) map.get("fromTime")), new Timestamp((Long) map.get("toTime")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
@@ -90,8 +111,11 @@ public class MeasureController {
     @RequestMapping(value = "getAllByFromTime", method = RequestMethod.POST)
     public String getAllByFromTime(@RequestBody String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) model.get("accountNumber");
-        if (accountNumber == null) accountNumber = (String) map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         List list = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp((Long) map.get("fromTime")));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
     }

@@ -9,7 +9,7 @@
 - 测试端口的基地址为http://ecs.jimstar.top:8080/Wearable_war/，本文档中地址均为该基地址的相对地址，如，注册API为
 http://ecs.jimstar.top:8080/Wearable_war/User/join
 - 需要管理数据库时，管理地址https://ecs.jimstar.top/phpmyadmin 账号密码联系服务器作者。
-- 所有API均会返回status属性，值为0表示成功，通常值为1表示失败（若有多种失败情况会特殊说明）。以下文档中不再说明。
+- 所有API均会返回status属性，值为0表示成功，通常值为1表示失败（若有多种失败情况会特殊说明）,3表示验证失败。以下文档中不再说明。
 - 所有API的request内容都会在response中。
 - 所有请求参数和可选请求参数都必须是JSON格式，即使仅仅只有一条内容，不接受但个属性的POST或GET方法，只接受JSON。
 - 除不需要参数的方法（可为POST或GET）外，所有方法均为POST方法。
@@ -86,6 +86,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 creq:
 - String newPassword
@@ -105,6 +106,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 一个名为user的对象，其中属性为:
@@ -137,6 +139,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 
@@ -208,6 +211,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 名为measures的measure对象列表。
@@ -222,6 +226,8 @@ req:
 
 areq:
 - String accountNumber
+- String password
+
 
 res:
 - 名为measures的measure对象列表。
@@ -235,9 +241,11 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 名为measures的measure对象列表。
@@ -250,6 +258,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 名为measure的measure对象。
@@ -262,6 +271,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 名为measures的measure对象列表。
@@ -275,6 +285,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 名为measures的measure对象列表。
@@ -289,6 +300,7 @@ req:
 
 areq:
 - String accountNumber
+- String password
 
 res:
 - 名为measures的measure对象列表。

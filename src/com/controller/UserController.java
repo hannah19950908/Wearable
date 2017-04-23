@@ -87,8 +87,11 @@ public class UserController {
     public String edit(@RequestBody String mapString,ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String oldPassword = Md5Encoder((String) map.get("oldPassword"));
-        String accountNumber=(String) model.get("accountNumber");
-        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         String password = userService.findByAccountNumber(accountNumber).getPassword();
         map.put("status", 1);
         if (oldPassword.equals(password)) {
@@ -112,8 +115,11 @@ public class UserController {
     @RequestMapping("display")
     public String display(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber=(String) model.get("accountNumber");
-        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
         userEntity.setPassword(null);
         if (userEntity == null) {
@@ -128,8 +134,11 @@ public class UserController {
     @RequestMapping("logout")
     public String logout(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber=(String) model.get("accountNumber");
-        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         model.addAttribute("accountNumber",null);
         model.remove("accountNumber");
         if(model.get("accountNumber")==null){
@@ -141,8 +150,11 @@ public class UserController {
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public String delete(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber=(String) model.get("accountNumber");
-        if(accountNumber==null) accountNumber=(String)map.get("accountNumber");
+        String accountNumber=userService.getAccountNumber(model,map);
+        if(accountNumber==null){
+            map.put("status",3);
+            return JSONUtil.toJSON(map);
+        }
         if (userService.deleteByAccountNumberAndPassword(accountNumber, (String) map.get("password"))) {
             map.put("status", 0);
         } else {

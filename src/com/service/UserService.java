@@ -4,8 +4,12 @@ import com.dao.UserDao;
 import com.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.util.DigestUtil.Md5Encoder;
 
 
 /**
@@ -39,6 +43,7 @@ public class UserService {
     }
     public UserEntity findByAccountNumberAndPassword(String accountNumber, String password){
         UserEntity userEntity=new UserEntity();
+        userEntity.setAccountNumber(accountNumber);
         userEntity.setPassword(password);
         List list=userDao.findByExample(userEntity);
         return list.isEmpty()?null:(UserEntity) list.get(0);
@@ -77,5 +82,20 @@ public class UserService {
         }
         userDao.delete(userEntity);
         return true;
+    }
+    public String getAccountNumber(ModelMap model, Map map) throws Exception{
+        String accountNumber=(String) model.get("accountNumber");
+        if(accountNumber==null){
+            accountNumber=(String)map.get("accountNumber");
+            String passwordNotEncoded=(String)map.get("password");
+            if(accountNumber!=null&&passwordNotEncoded!=null){
+                String password= Md5Encoder(passwordNotEncoded);
+                if(findByAccountNumberAndPassword(accountNumber,password)==null){
+                    accountNumber=null;
+                }
+            }
+            else accountNumber=null;
+        }
+        return accountNumber;
     }
 }
