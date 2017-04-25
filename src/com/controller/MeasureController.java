@@ -35,7 +35,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         MeasureEntity measureEntity = measureService.findTheLatestByAccountNumber(accountNumber);
@@ -51,7 +50,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         List list = measureService.findTodayDataByAccountNumber(accountNumber);
@@ -63,7 +61,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         List list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp((Long) map.get("timestamp")));
@@ -75,7 +72,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         List list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber,
@@ -88,7 +84,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         List list = measureService.findAllDataByAccountNumber(accountNumber);
@@ -100,7 +95,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         List list = measureService.findByAccountNumberAndCommitTime(accountNumber,
@@ -113,7 +107,6 @@ public class MeasureController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         List list = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp((Long) map.get("fromTime")));

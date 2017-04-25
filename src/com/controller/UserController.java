@@ -89,7 +89,6 @@ public class UserController {
         String oldPassword = Md5Encoder((String) map.get("oldPassword"));
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         String password = userService.findByAccountNumber(accountNumber).getPassword();
@@ -117,7 +116,6 @@ public class UserController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
@@ -136,7 +134,6 @@ public class UserController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         model.addAttribute("accountNumber",null);
@@ -152,7 +149,6 @@ public class UserController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber=userService.getAccountNumber(model,map);
         if(accountNumber==null){
-            map.put("status",3);
             return JSONUtil.toJSON(map);
         }
         if (userService.deleteByAccountNumberAndPassword(accountNumber, (String) map.get("password"))) {

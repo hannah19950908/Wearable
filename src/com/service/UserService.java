@@ -9,8 +9,6 @@ import org.springframework.ui.ModelMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.util.DigestUtil.Md5Encoder;
-
 
 /**
  * Created by 63289 on 2017/2/25.
@@ -87,14 +85,17 @@ public class UserService {
         String accountNumber=(String) model.get("accountNumber");
         if(accountNumber==null){
             accountNumber=(String)map.get("accountNumber");
-            String passwordNotEncoded=(String)map.get("password");
-            if(accountNumber!=null&&passwordNotEncoded!=null){
-                String password= Md5Encoder(passwordNotEncoded);
-                if(findByAccountNumberAndPassword(accountNumber,password)==null){
+            String passwordEncoded =(String)map.get("passwordEncoded");
+            if(accountNumber!=null&& passwordEncoded !=null){
+                if(findByAccountNumberAndPassword(accountNumber, passwordEncoded)==null){
                     accountNumber=null;
+                    map.put("status",3);
                 }
             }
-            else accountNumber=null;
+            else{
+                accountNumber=null;
+                map.put("status",3);
+            }
         }
         return accountNumber;
     }

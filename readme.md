@@ -86,7 +86,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 creq:
 - String newPassword
@@ -106,7 +106,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 一个名为user的对象，其中属性为:
@@ -139,7 +139,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 
@@ -211,7 +211,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 名为measures的measure对象列表。
@@ -226,7 +226,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 
 res:
@@ -241,11 +241,11 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 名为measures的measure对象列表。
@@ -258,7 +258,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 名为measure的measure对象。
@@ -271,7 +271,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 名为measures的measure对象列表。
@@ -285,7 +285,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 名为measures的measure对象列表。
@@ -300,7 +300,7 @@ req:
 
 areq:
 - String accountNumber
-- String password
+- String passwordEncoded
 
 res:
 - 名为measures的measure对象列表。
