@@ -186,65 +186,36 @@ mehod:DELETE
 
 ## /api/{token}/data
 
-method:GET
+method:POST
 
-获取当前用户的所有数据，按commitTime正序排序。
+获取当前用户某段时间的所有数据，按commitTime正序排序，若无fromTime属性，则直接返回全部数据。若无toTime属性，则默认为从fromTime到当前时间的所有数据。
+
+creq:
+- Long fromTime
+- Long toTime
 
 res:
 - 名为measures的measure对象列表。
 
-## /api/{token}/dataByTimeRange
+## /api/{token}/someDayData
 
 method:POST
 
-获取当前用户某段时间的所有数据，按commitTime正序排序，若无toTime属性，则默认为到当前时间。
-
-req:
-- Long fromTime
+获取当前用户某日的所有数据，按commitTime正序排序。若无timestamp，则返回今日的所有数据。
 
 creq:
-- Long toTime
+- Long timestamp
 
 res:
 - 名为measures的measure对象列表。
 
 ## /api/{token}/latest
 
-method:GET
-
-获取当前用户的最新一条信息。
-
-res:
-- 名为measure的measure对象。
-
-## /api/{token}/someDayData
-
-method:GET
-
-获取当前用户今日的所有数据，按commitTime正序排序。
-
-res:
-- 名为measures的measure对象列表。
-
-## /api/{token}/someDayData
-
 method:POST
 
-获取当前用户某日的所有数据，按commitTime正序排序。
+获取当前用户某段日期中的每天的最后的数据，按commitTime正序排序。如果fromTime和toTime任意一个为空，则返回列表中仅包含今日最新数据。
 
-req:
-- Long timestamp
-
-res:
-- 名为measures的measure对象列表。
-
-## /api/{token}/latestByDateRange
-
-method:POST
-
-获取当前用户某段日期中的每天的最后的数据，按commitTime正序排序。
-
-req:
+creq:
 - Long fromTime
 - Long toTime
 
