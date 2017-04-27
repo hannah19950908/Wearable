@@ -38,5 +38,8 @@
     <orderEntry type="library" name="mysql-connector-java-5.1.40-bin" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.0.43" level="application_server_libraries" />
     <orderEntry type="library" name="jackson-core-2.8.5" level="project" />
+    <orderEntry type="library" name="jedis-2.9.0" level="project" />
+    <orderEntry type="library" name="spring-data-redis-1.8.3.RELEASE" level="project" />
+    <orderEntry type="library" name="commons-pool2-2.4.2" level="project" />
   </component>
 </module>

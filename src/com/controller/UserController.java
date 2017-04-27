@@ -1,14 +1,15 @@
 package com.controller;
 
+import com.Exception.UserSetupException;
 import com.entity.UserEntity;
+import com.service.TokenService;
 import com.service.UserService;
 import com.util.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
+import javax.naming.AuthenticationException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.util.DigestUtil.Md5Encoder;
@@ -16,54 +17,39 @@ import static com.util.DigestUtil.Md5Encoder;
 /**
  * Created by 63289 on 2017/2/25.
  */
-@CrossOrigin(value = "*",maxAge = 3600)
+@CrossOrigin(value = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "User",produces="application/json;charset=UTF-8")
-@SessionAttributes("accountNumber")
+@RequestMapping(value = "api", produces = "application/json;charset=UTF-8")
 public class UserController {
     private final UserService userService;
+    private final TokenService tokenService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TokenService tokenService) {
         this.userService = userService;
+        this.tokenService = tokenService;
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String login(@RequestBody String mapString, Model model, HttpSession session) throws Exception {
+    @RequestMapping(value = "token", method = RequestMethod.POST)
+    public String login(@RequestBody String mapString) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         String password = Md5Encoder((String) map.get("password"));
         map.put("password", password);
         UserEntity userEntity = userService.findByAccountNumberAndPassword(accountNumber, password);
         if (userEntity == null) {
-            map.put("status", 1);
+            throw new AuthenticationException();
         } else {
-            map.put("status", 0);
-            //将用户名放在session中。
-            model.addAttribute("accountNumber", accountNumber);
+            map.put("token", tokenService.generateToken(accountNumber));
         }
         return JSONUtil.toJSON(map);
     }
 
-    @RequestMapping(value = "check", method = RequestMethod.POST)
-    public String check(@RequestBody String mapString) throws Exception {
+    @RequestMapping(value = "user", method = RequestMethod.POST)
+    public String setup(@RequestBody String mapString) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
-        if (userEntity == null) {
-            map.put("status", 0);
-        } else {
-            map.put("status", 1);
-        }
-        return JSONUtil.toJSON(map);
-    }
-
-    @RequestMapping(value = "join", method = RequestMethod.POST)
-    public String join(@RequestBody String mapString, Model model) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
-        String accountNumber = (String) map.get("accountNumber");
-        UserEntity userEntity = userService.findByAccountNumber(accountNumber);
-        map.put("status", 1);
         if (userEntity == null) {
             System.out.println(userEntity);
             String password = Md5Encoder((String) map.get("password"));
@@ -73,89 +59,56 @@ public class UserController {
             String relativeName = (String) map.get("relativeName");
             String relativePhone = (String) map.get("relativePhone");
             String email = (String) map.get("email");
-            if (userService.addByInformation(accountNumber, password, userName, phone, relativeName, relativePhone, email)) {
-                map.put("status", 0);
-                model.addAttribute("accountNumber", accountNumber);
-            } else {
-                map.put("status", 2);
-            }
-        }
+            if (userService.addByInformation(accountNumber, password, userName, phone, relativeName, relativePhone, email))
+                map.put("token", tokenService.generateToken(accountNumber));
+            else throw new RuntimeException();
+        } else throw new UserSetupException();
         return JSONUtil.toJSON(map);
     }
 
-    @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public String edit(@RequestBody String mapString,ModelMap model) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
-        String oldPassword = Md5Encoder((String) map.get("oldPassword"));
-        String accountNumber=userService.getAccountNumber(model,map);
-        if(accountNumber==null){
-            return JSONUtil.toJSON(map);
-        }
-        String password = userService.findByAccountNumber(accountNumber).getPassword();
-        map.put("status", 1);
-        if (oldPassword.equals(password)) {
-            String newPasswordNotEncoded=(String) map.get("newPassword");
-            String newPassword=null;
-            if(newPasswordNotEncoded!=null){
-                newPassword = Md5Encoder(newPasswordNotEncoded);
-            }
-            String userName = (String) map.get("userName");
-            String phone = (String) map.get("phone");
-            String relativeName = (String) map.get("relativeName");
-            String relativePhone = (String) map.get("relativePhone");
-            String email = (String) map.get("email");
-            if (userService.updateByInformation(accountNumber, oldPassword, newPassword, userName, phone, relativeName, relativePhone, email)) {
-                map.put("status", 0);
-            }
-        }
-        return JSONUtil.toJSON(map);
-    }
-
-    @RequestMapping("display")
-    public String display(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
-        String accountNumber=userService.getAccountNumber(model,map);
-        if(accountNumber==null){
-            return JSONUtil.toJSON(map);
-        }
+    @RequestMapping(value = "{token}", method = RequestMethod.GET)
+    public String display(@PathVariable String token) throws Exception {
+        Map map = new HashMap();
+        String accountNumber = tokenService.getAccountNumber(token);
+        if (accountNumber == null) throw new AuthenticationException();
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
         userEntity.setPassword(null);
-        if (userEntity == null) {
-            map.put("status", 1);
-        } else {
-            map.put("status", 0);
-            map.put("user", userEntity);
-        }
+        map.put("user", userEntity);
         return JSONUtil.toJSON(map);
     }
-    //暂时不可用，可以做伪登出。
-    @RequestMapping("logout")
-    public String logout(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
+
+    @RequestMapping(value = "{token}", method = RequestMethod.PUT)
+    public String edit(@PathVariable String token, @RequestBody String mapString) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
-        String accountNumber=userService.getAccountNumber(model,map);
-        if(accountNumber==null){
-            return JSONUtil.toJSON(map);
+        String accountNumber = tokenService.getAccountNumber(token);
+        if (accountNumber == null) throw new AuthenticationException();
+        String newPasswordNotEncoded = (String) map.get("newPassword");
+        String newPassword = null;
+        if (newPasswordNotEncoded != null) {
+            newPassword = Md5Encoder(newPasswordNotEncoded);
         }
-        model.addAttribute("accountNumber",null);
-        model.remove("accountNumber");
-        if(model.get("accountNumber")==null){
-            map.put("status", 0);
-        }else map.put("status",1);
+        String userName = (String) map.get("userName");
+        String phone = (String) map.get("phone");
+        String relativeName = (String) map.get("relativeName");
+        String relativePhone = (String) map.get("relativePhone");
+        String email = (String) map.get("email");
+        if (!userService.updateByInformation(accountNumber, newPassword, userName, phone, relativeName, relativePhone, email))
+            throw new RuntimeException();
         return JSONUtil.toJSON(map);
     }
-    //删除账户
-    @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public String delete(@RequestBody(required = false) String mapString, ModelMap model) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
-        String accountNumber=userService.getAccountNumber(model,map);
-        if(accountNumber==null){
-            return JSONUtil.toJSON(map);
-        }
-        if (userService.deleteByAccountNumberAndPassword(accountNumber, (String) map.get("password"))) {
-            map.put("status", 0);
-        } else {
-            map.put("status", 1);
-        }
-        return JSONUtil.toJSON(map);
+
+    @RequestMapping(value = "{token}", method = RequestMethod.DELETE)
+    public void logout(@PathVariable String token) throws Exception {
+        String accountNumber = tokenService.getAccountNumber(token);
+        if (accountNumber == null) throw new AuthenticationException();
+        tokenService.delete(token);
+    }
+
+    @RequestMapping(value = "{token}/user", method = RequestMethod.DELETE)
+    public void delete(@PathVariable String token) throws Exception {
+        String accountNumber = tokenService.getAccountNumber(token);
+        if (accountNumber == null) throw new AuthenticationException();
+        tokenService.delete(token);
+        if(!userService.deleteByAccountNumber(accountNumber)) throw new RuntimeException();
     }
 }

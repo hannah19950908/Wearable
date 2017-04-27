@@ -1,6 +1,5 @@
 package com.service;
 
-import com.Exception.UserAuthenticationException;
 import com.dao.UserDao;
 import com.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,11 +56,10 @@ public class UserService {
         return list.isEmpty() ? null : (UserEntity) list.get(0);
     }
 
-    public boolean updateByInformation(String accountNumber, String oldPassword, String newPassword, String userName, String phone, String relativeName,
+    public boolean updateByInformation(String accountNumber, String newPassword, String userName, String phone, String relativeName,
                                        String relativePhone, String email) {
         UserEntity userEntity = new UserEntity();
         userEntity.setAccountNumber(accountNumber);
-        userEntity.setPassword(oldPassword);
         if (!userDao.findByExample(userEntity).isEmpty()) {
             if (newPassword != null) userEntity.setPassword(newPassword);
             if (userName != null) userEntity.setUserName(userName);
@@ -75,10 +73,9 @@ public class UserService {
         return false;
     }
 
-    public boolean deleteByAccountNumberAndPassword(String accountNumber, String password) {
+    public boolean deleteByAccountNumber(String accountNumber) {
         UserEntity userEntity = new UserEntity();
         userEntity.setAccountNumber(accountNumber);
-        userEntity.setPassword(password);
         if (userDao.findByExample(userEntity).isEmpty()) {
             return false;
         }
@@ -93,9 +90,9 @@ public class UserService {
             String passwordEncoded = (String) map.get("passwordEncoded");
             if (accountNumber != null && passwordEncoded != null) {
                 if (findByAccountNumberAndPassword(accountNumber, passwordEncoded) == null) {
-                    throw new UserAuthenticationException(map);
+                    throw new AuthenticationException();
                 }
-            } else throw new UserAuthenticationException(map);
+            } else throw new AuthenticationException();
         }
         return accountNumber;
     }
