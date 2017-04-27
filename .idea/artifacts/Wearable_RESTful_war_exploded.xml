@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="Wearable:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/Wearable_war_exploded</output-path>
+  <artifact type="exploded-war" name="Wearable-RESTful:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Wearable_RESTful_war_exploded</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -12,11 +12,11 @@
           <element id="library" level="project" name="Hibernate 5.2.9-5.2.9" />
           <element id="library" level="project" name="commons-codec-1.10" />
           <element id="library" level="project" name="mysql-connector-java-5.1.40-bin" />
-          <element id="library" level="project" name="jackson-2.8.5" />
           <element id="library" level="project" name="jackson-core-2.8.5" />
           <element id="library" level="project" name="jedis-2.9.0" />
           <element id="library" level="project" name="spring-data-redis-1.8.3.RELEASE" />
           <element id="library" level="project" name="commons-pool2-2.4.2" />
+          <element id="library" level="project" name="spring-data-commons-1.13.3.RELEASE" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="Wearable-RESTful/web/Web" />

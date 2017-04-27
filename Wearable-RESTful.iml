@@ -41,5 +41,6 @@
     <orderEntry type="library" name="jedis-2.9.0" level="project" />
     <orderEntry type="library" name="spring-data-redis-1.8.3.RELEASE" level="project" />
     <orderEntry type="library" name="commons-pool2-2.4.2" level="project" />
+    <orderEntry type="library" name="spring-data-commons-1.13.3.RELEASE" level="project" />
   </component>
 </module>

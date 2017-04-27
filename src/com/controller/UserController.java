@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.Exception.TokenException;
 import com.Exception.UserSetupException;
 import com.entity.UserEntity;
 import com.service.TokenService;
@@ -70,7 +71,7 @@ public class UserController {
     public String display(@PathVariable String token) throws Exception {
         Map map = new HashMap();
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new AuthenticationException();
+        if(accountNumber==null) throw new TokenException();
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
         userEntity.setPassword(null);
         map.put("user", userEntity);
@@ -81,7 +82,7 @@ public class UserController {
     public String edit(@PathVariable String token, @RequestBody String mapString) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new AuthenticationException();
+        if(accountNumber==null) throw new TokenException();
         String newPasswordNotEncoded = (String) map.get("newPassword");
         String newPassword = null;
         if (newPasswordNotEncoded != null) {
@@ -100,14 +101,14 @@ public class UserController {
     @RequestMapping(value = "{token}", method = RequestMethod.DELETE)
     public void logout(@PathVariable String token) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new AuthenticationException();
+        if(accountNumber==null) throw new TokenException();
         tokenService.delete(token);
     }
 
     @RequestMapping(value = "{token}/user", method = RequestMethod.DELETE)
     public void delete(@PathVariable String token) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new AuthenticationException();
+        if(accountNumber==null) throw new TokenException();
         tokenService.delete(token);
         if(!userService.deleteByAccountNumber(accountNumber)) throw new RuntimeException();
     }

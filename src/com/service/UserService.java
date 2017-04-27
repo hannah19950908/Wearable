@@ -58,8 +58,7 @@ public class UserService {
 
     public boolean updateByInformation(String accountNumber, String newPassword, String userName, String phone, String relativeName,
                                        String relativePhone, String email) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setAccountNumber(accountNumber);
+        UserEntity userEntity=findByAccountNumber(accountNumber);
         if (!userDao.findByExample(userEntity).isEmpty()) {
             if (newPassword != null) userEntity.setPassword(newPassword);
             if (userName != null) userEntity.setUserName(userName);

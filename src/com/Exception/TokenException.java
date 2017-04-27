@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Created by 63289 on 2017/4/27.
  */
-@ResponseStatus(value = HttpStatus.CONFLICT,reason = "The account has exists")
-public class UserSetupException extends Exception {
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Your token is invalid.")
+public class TokenException extends Exception{
 }

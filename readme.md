@@ -1,4 +1,9 @@
-# 功能更新
+# 重要更新
+
+## 2017-4-27
+
+- 对API风格进行了大的调整，改为RESTful风格。旧的代码和旧的文档会置于old分支。
+- 使用了redis作为缓存，替代了session机制，配合RESTful-api，实现了同时和WEB前端+Android手机端进行交互。
 
 ## 2017-4-23
 
@@ -6,18 +11,18 @@
 
 # 公共说明
 
-- 测试端口的基地址为http://ecs.jimstar.top:8080/Wearable_war/，本文档中地址均为该基地址的相对地址，如，注册API为
-http://ecs.jimstar.top:8080/Wearable_war/User/join
-- 需要管理数据库时，管理地址https://ecs.jimstar.top/phpmyadmin 账号密码联系服务器作者。
-- 所有API均会返回status属性，值为0表示成功，通常值为1表示失败（若有多种失败情况会特殊说明）,3表示验证失败。以下文档中不再说明。
-- 所有API的request内容都会在response中。
-- 所有请求参数和可选请求参数都必须是JSON格式，即使仅仅只有一条内容，不接受但个属性的POST或GET方法，只接受JSON。
-- 除不需要参数的方法（可为POST或GET）外，所有方法均为POST方法。
-- req为必须请求参数，areq为不能使用session的设备的必须请求，creq为可选请求参数，res为返回参数。
-- 若请求中没有accountNumber参数，即说明需要session中存储了accountNumber参数，请成功注册/成功登录后调用。
-- 请求时，允许JSON结构中有冗余信息，服务器会直接无视，但返回的内容中也会有该冗余信息。
+- 测试端口的基地址为http://ecs.jimstar.top:8080/Wearable/，本文档中地址均为该基地址的相对地址，如，注册API为http://ecs.jimstar.top:8080/Wearable/api/user
+- 所有API均使用HTTP状态码进行响应，若功能正常，则状态码为200，无其他提示；若发生异常，则返回对应HTTP状态码和异常原因。
+- 对于请求中有Body的API，这些内容会在响应中被返回，便于识别和提取。
+- 所有API均遵守RESTful风格，使用了GET,POST,PUT,DELETE四种HTTP方法。
+- 每个token在缓存中的生命周期为一小时，超时后，需要重新申请token。此后为适应移动端需求，可能会对生命周期有所调整。
+- 对于目前的阶段性版本，开发和本地测试已经完成。
+
+# 文档说明
+
 - 对服务器API文档有任何疑问，请联系服务器代码作者孙博宇 邮箱：cielosun@outlook.com qq:632898354。
-- 目前开发和测试已经完成。
+- 本文档中，req为必须请求参数，creq为可选请求参数，res为返回参数。
+- 本文档中{token}这种格式表示从服务器获取的某个变量。例如：http://ecs.jimstar.top:8080/api/64d2915eb0a54e2b93bcdef71b812961/data，其中64d2915eb0a54e2b93bcdef71b812961对应{token}，该字符串在登录/注册操作时可以从响应中获取。
 
 请求样例：
 对于多个属性：
@@ -41,28 +46,24 @@ http://ecs.jimstar.top:8080/Wearable_war/User/join
 
 # 用户管理部分
 
-## /User/login
+## /api/token
 
-通过用户名和密码进行登录。登录成功为0。
+method:POST
+
+通过用户名和密码进行登录。
 
 req:
 - String accountNumber
 - String password
 
 res:
+- String token
 
-## /User/check
+## /api/user
 
-通过用户名检查数据库中是否有该用户，没有该用户为0。
+method:POST
 
-req:
-- String accountNumber
-
-res:
-
-## /User/join
-
-向数据库添加用户，添加成功为0,用户已存在为1，其他原因添加失败为2。
+向数据库添加用户。
 
 req:
 - String accountNumber
@@ -76,17 +77,13 @@ creq:
 - String email
 
 res:
+- String token
 
-## /User/edit
+## /api/{token}
 
-更改当前用户数据，更新成功为0。
+method:PUT
 
-req:
-- String oldPassword
-
-areq:
-- String accountNumber
-- String passwordEncoded
+更改当前用户数据。
 
 creq:
 - String newPassword
@@ -96,17 +93,11 @@ creq:
 - String relativePhone
 - String email
 
-res:
+## /api/{token}
 
-## /User/display
+method:GET
 
-显示当前用户的用户数据。成功为0。
-
-req:
-
-areq:
-- String accountNumber
-- String passwordEncoded
+显示当前用户的用户数据。
 
 res:
 - 一个名为user的对象，其中属性为:
@@ -127,29 +118,20 @@ res:
             "relativePhone":"188xxxxxxxx",
             "email":"cielosun@xxxxxx.com",
             "password":null},
-    "status":0
 }
 ```
 
-## /User/logout
+## /api/{token}
 
-登出，由于清除session的方法有延时，请前端用跳转并重置到需要登录的状态帮忙掩护一下,登出成功返回0。
+method:DELETE
 
-req:
+登出。
 
-areq:
-- String accountNumber
-- String passwordEncoded
+## /api/{token}/user
 
-res:
+mehod:DELETE
 
-## /User/delete
-
-删除当前用户。删除成功为0。
-
-req:
-
-res:
+删除当前用户。
 
 # 数据测量部分
 
@@ -197,110 +179,74 @@ res:
                         "id":2
                     }
                 ],
-    "status":0
 }
 ```
 
 对于所有时间请求，请以UNIX毫秒数（例如：1492661406000）的形式发送。
 
-## /Measure/getAll
+## /api/{token}/data
 
-获取当前用户的所有数据，按commitTime正序排序，若获取成功为0。
+method:GET
 
-req:
-
-areq:
-- String accountNumber
-- String passwordEncoded
+获取当前用户的所有数据，按commitTime正序排序。
 
 res:
 - 名为measures的measure对象列表。
 
-## /Measure/getAllByTimeRange
+## /api/{token}/dataByTimeRange
 
-获取当前用户某段时间的所有数据，按commitTime正序排序，若获取成功为0。
+method:POST
+
+获取当前用户某段时间的所有数据，按commitTime正序排序，若无toTime属性，则默认为到当前时间。
 
 req:
 - Long fromTime
+
+creq:
 - Long toTime
 
-areq:
-- String accountNumber
-- String passwordEncoded
-
-
 res:
 - 名为measures的measure对象列表。
 
-## /Measure/getAllByFromTime
+## /api/{token}/latest
 
-获取当前用户从某个时间至今的所有数据，按commitTime正序排序，若获取成功为0。
+method:GET
 
-req:
-- Long fromTime
-
-areq:
-- String accountNumber
-- String passwordEncoded
-
-areq:
-- String accountNumber
-- String passwordEncoded
-
-res:
-- 名为measures的measure对象列表。
-
-## /Measure/getLatest
-
-获取当前用户的最新一条信息,获取成功为0。
-
-req:
-
-areq:
-- String accountNumber
-- String passwordEncoded
+获取当前用户的最新一条信息。
 
 res:
 - 名为measure的measure对象。
 
-## /Measure/getToday
+## /api/{token}/someDayData
 
-获取当前用户今日的所有数据，按commitTime正序排序，若获取成功为0。
+method:GET
 
-req:
-
-areq:
-- String accountNumber
-- String passwordEncoded
+获取当前用户今日的所有数据，按commitTime正序排序。
 
 res:
 - 名为measures的measure对象列表。
 
-## /Measure/getByDate
+## /api/{token}/someDayData
 
-获取当前用户某日的所有数据，按commitTime正序排序，若获取成功为0。
+method:POST
+
+获取当前用户某日的所有数据，按commitTime正序排序。
 
 req:
 - Long timestamp
 
-areq:
-- String accountNumber
-- String passwordEncoded
-
 res:
 - 名为measures的measure对象列表。
 
-## /Measure/getEachDateLatestByDateRange
+## /api/{token}/latestByDateRange
 
-获取当前用户某段日期中的每天的最后的数据，按commitTime正序排序，若获取成功为0。
+method:POST
+
+获取当前用户某段日期中的每天的最后的数据，按commitTime正序排序。
 
 req:
 - Long fromTime
 - Long toTime
-
-areq:
-- String accountNumber
-- String passwordEncoded
 
 res:
 - 名为measures的measure对象列表。
