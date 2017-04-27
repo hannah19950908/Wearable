@@ -61,6 +61,12 @@ public class MeasureService {
         LocalDate toLocalDate=toTime.toLocalDateTime().toLocalDate();
         return findTheLatestOfDateByAccountNumberAndDateRange(accountNumber,fromLocalDate,toLocalDate);
     }
+    //查询某账户某个时间前一年中每天的最后一条数据，参数为2个时间戳
+    public List<MeasureEntity> findTheLatestOfDateByAccountNumberAndDateRange(String accountNumber,Timestamp toTime){
+        LocalDate fromLocalDate=toTime.toLocalDateTime().toLocalDate().minusYears(1);
+        LocalDate toLocalDate=toTime.toLocalDateTime().toLocalDate();
+        return findTheLatestOfDateByAccountNumberAndDateRange(accountNumber,fromLocalDate,toLocalDate);
+    }
     //查询某账户一段日期中每天的最后一条数据，参数为2个LocalDate
     private List<MeasureEntity> findTheLatestOfDateByAccountNumberAndDateRange(String accountNumber,LocalDate fromLocalDate,LocalDate toLocalDate){
         System.out.println(accountNumber);

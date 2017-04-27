@@ -188,7 +188,12 @@ mehod:DELETE
 
 method:POST
 
-获取当前用户某段时间的所有数据，按commitTime正序排序，若无fromTime属性，则直接返回全部数据。若无toTime属性，则默认为从fromTime到当前时间的所有数据。
+获取当前用户某段时间的所有数据，按commitTime正序排序。
+
+1. 若无fromTime属性和toTime属性，则直接返回全部数据。
+2. 若无fromTime属性，则返回截至toTime的全部数据。
+3. 若无toTime属性，则从fromTime到当前时间的所有数据。
+4. 若有fromTime属性和toTime属性，则返回从fromTime到toTime之间的所有数据。
 
 creq:
 - Long fromTime
@@ -213,7 +218,11 @@ res:
 
 method:POST
 
-获取当前用户某段日期中的每天的最后的数据，按commitTime正序排序。如果fromTime和toTime任意一个为空，则返回列表中仅包含今日最新数据。
+获取当前用户某段日期中的每天的最新的数据，按commitTime正序排序。
+1. 若无fromTime属性和toTime属性，则直接返回最新的一条数据。
+2. 若无fromTime属性，则返回从toTime日期一年前截至toTime日期的每天的最新一条数据。
+3. 若无toTime属性，则从fromTime日期到今日的最新一条数据。
+4. 若有fromTime属性和toTime属性，则返回从fromTime日期到toTime日期之间的最新一条数据。
 
 creq:
 - Long fromTime
