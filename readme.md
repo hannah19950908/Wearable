@@ -11,7 +11,8 @@
 
 # 公共说明
 
-- 测试端口的基地址为http://ecs.jimstar.top:8080/Wear/，本文档中地址均为该基地址的相对地址，如，注册API为http://ecs.jimstar.top:8080/Wear/api/user
+- 测试端口的基地址为http://ecs.jimstar.top:8080/Wear_war/。
+- 本文档中地址均为该基地址的相对地址，如，注册API为 http://ecs.jimstar.top:8080/Wear_war/api/user。
 - 所有API均使用HTTP状态码进行响应，若功能正常，则状态码为200，无其他提示；若发生异常，则返回对应HTTP状态码和异常原因。
 - 对于请求中有Body的API，这些内容会在响应中被返回，便于识别和提取。
 - 所有API均遵守RESTful风格，使用了GET,POST,PUT,DELETE四种HTTP方法。
@@ -22,7 +23,7 @@
 
 - 对服务器API文档有任何疑问，请联系服务器代码作者孙博宇 邮箱：cielosun@outlook.com qq:632898354。
 - 本文档中，req为必须请求参数，creq为可选请求参数，res为返回参数。
-- 本文档中{token}这种格式表示从服务器获取的某个变量。例如：http://ecs.jimstar.top:8080/api/64d2915eb0a54e2b93bcdef71b812961/data，其中64d2915eb0a54e2b93bcdef71b812961对应{token}，该字符串在登录/注册操作时可以从响应中获取。
+- 本文档中{token}这种格式表示从服务器获取的某个变量。例如：http://ecs.jimstar.top:8080/Wear_war/api/64d2915eb0a54e2b93bcdef71b812961/data，其中64d2915eb0a54e2b93bcdef71b812961对应{token}，该字符串在登录/注册操作时可以从响应中获取。
 
 请求样例：
 对于多个属性：
