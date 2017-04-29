@@ -72,6 +72,7 @@
         <property name="port" value="6379"/>
         <property name="poolConfig" ref="jedisPoolConfig"/>
         <property name="usePool" value="true"/>
+        <property name="password" value="hahaschool"/>
     </bean>
 
     <bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>

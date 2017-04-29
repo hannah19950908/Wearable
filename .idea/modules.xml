@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Wearable-RESTful.iml" filepath="$PROJECT_DIR$/Wearable-RESTful.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Wear.iml" filepath="$PROJECT_DIR$/Wear.iml" />
     </modules>
   </component>
 </project>

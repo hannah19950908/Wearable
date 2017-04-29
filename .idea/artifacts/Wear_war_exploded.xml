@@ -1,10 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="Wearable-RESTful:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/Wearable_RESTful_war_exploded</output-path>
+  <artifact type="exploded-war" name="Wear:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Wear_war_exploded</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="Wearable-RESTful" />
+          <element id="module-output" name="Wear" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Spring-4.3.7.RELEASE" />
@@ -19,7 +19,7 @@
           <element id="library" level="project" name="spring-data-commons-1.13.3.RELEASE" />
         </element>
       </element>
-      <element id="javaee-facet-resources" facet="Wearable-RESTful/web/Web" />
+      <element id="javaee-facet-resources" facet="Wear/web/Web" />
     </root>
   </artifact>
 </component>
