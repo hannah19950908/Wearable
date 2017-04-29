@@ -11,7 +11,7 @@
 
 # 公共说明
 
-- 测试端口的基地址为http://ecs.jimstar.top:8080/Wearable/，本文档中地址均为该基地址的相对地址，如，注册API为http://ecs.jimstar.top:8080/Wearable/api/user
+- 测试端口的基地址为http://ecs.jimstar.top:8080/Wear/，本文档中地址均为该基地址的相对地址，如，注册API为http://ecs.jimstar.top:8080/Wear/api/user
 - 所有API均使用HTTP状态码进行响应，若功能正常，则状态码为200，无其他提示；若发生异常，则返回对应HTTP状态码和异常原因。
 - 对于请求中有Body的API，这些内容会在响应中被返回，便于识别和提取。
 - 所有API均遵守RESTful风格，使用了GET,POST,PUT,DELETE四种HTTP方法。
