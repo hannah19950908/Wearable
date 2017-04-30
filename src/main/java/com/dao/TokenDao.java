@@ -20,7 +20,6 @@ public class TokenDao {
     }
 
     public void put(String token, String accountNumber) {
-//        redisTemplate.opsForValue().set(token, accountNumber, validTime, TimeUnit.MINUTES);
         redisTemplate.boundValueOps(token).set(accountNumber,validTime,TimeUnit.MINUTES);
     }
 
