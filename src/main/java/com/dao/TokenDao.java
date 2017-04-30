@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class TokenDao {
     private final RedisTemplate<String, String> redisTemplate;
-    private final static long validTime=60;
+    private final static long validTime=30;
 
     @Autowired
     public TokenDao(RedisTemplate redisTemplate) {
@@ -20,7 +20,8 @@ public class TokenDao {
     }
 
     public void put(String token, String accountNumber) {
-        redisTemplate.opsForValue().set(token, accountNumber, validTime, TimeUnit.MINUTES);
+//        redisTemplate.opsForValue().set(token, accountNumber, validTime, TimeUnit.MINUTES);
+        redisTemplate.boundValueOps(token).set(accountNumber,validTime,TimeUnit.MINUTES);
     }
 
     public String get(String token) {
