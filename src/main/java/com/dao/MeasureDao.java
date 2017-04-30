@@ -50,6 +50,10 @@ public class MeasureDao {
                         "order by commitTime desc",new Object[]{accountNumber});
         return list.isEmpty()?null:(MeasureEntity)list.get(0);
     }
+    public MeasureEntity findTheFirstByAccountNumber(String accountNumber){
+        List list=hibernateTemplate.find("from MeasureEntity where id=1");
+        return list.isEmpty()?null:(MeasureEntity) list.get(0);
+    }
     @Transactional
     public void update(MeasureEntity measureEntity){
         hibernateTemplate.update(measureEntity);
