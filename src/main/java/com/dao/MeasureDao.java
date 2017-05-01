@@ -51,7 +51,7 @@ public class MeasureDao {
         return list.isEmpty()?null:(MeasureEntity)list.get(0);
     }
     public MeasureEntity findTheFirstByAccountNumber(String accountNumber){
-        List list=hibernateTemplate.find("from MeasureEntity where id=1");
+        List list=hibernateTemplate.find("from MeasureEntity where accountNumber=? and id=1",new Object[]{accountNumber});
         return list.isEmpty()?null:(MeasureEntity) list.get(0);
     }
     @Transactional
