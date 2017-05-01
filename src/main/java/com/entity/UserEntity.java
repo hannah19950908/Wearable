@@ -1,12 +1,17 @@
 package com.entity;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by 63289 on 2017/4/30.
  */
 @Entity
 @Table(name = "myUser", schema = "wearable", catalog = "")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class UserEntity {
     private String accountNumber;
     private String email;
