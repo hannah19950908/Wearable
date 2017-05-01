@@ -1,6 +1,10 @@
 package com.entity;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 /**
@@ -8,6 +12,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "measure", schema = "wearable", catalog = "")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class MeasureEntity {
     private String accountNumber;
     private Timestamp commitTime;
