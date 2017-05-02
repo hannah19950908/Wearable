@@ -194,49 +194,71 @@ mehod:DELETE
 
 对于所有时间请求，请以UNIX毫秒数（例如：1492661406000）的形式发送。
 
-## /api/{token}/data
+## /api/{token}/data/{fromTimeMills}/{toTimeMills}
 
-method:POST
+接受的缺省形式：
+
+- /api/{token}/data
+- /api/{token}/data/{fromTimeMills}
+- /api/{token}/data//{toTimeMills}
+- /api/{token}/data/{fromTimeMills}/{toTimeMills}
+
+method:GET
 
 获取当前用户某段时间的所有数据，按commitTime正序排序。
 
-1. 若无fromTime属性和toTime属性，则直接返回全部数据。
-2. 若无fromTime属性，则返回截至toTime的全部数据。
-3. 若无toTime属性，则从fromTime到当前时间的所有数据。
-4. 若有fromTime属性和toTime属性，则返回从fromTime到toTime之间的所有数据。
-
-creq:
-- Long fromTime
-- Long toTime
+1. 若无fromTimeMills属性和toTimeMills属性，则直接返回全部数据。
+2. 若无fromTimeMills属性，则返回截至toTimeMills的全部数据。
+3. 若无toTimeMills属性，则从fromTimeMills到当前时间的所有数据。
+4. 若有fromTimeMills属性和toTimeMills属性，则返回从fromTimeMills到toTimeMills之间的所有数据。
 
 res:
 - 名为measures的measure对象列表。
 
-## /api/{token}/someDayData
+## /api/{token}/date/{timeMills}
 
-method:POST
+接受的缺省形式：
 
-获取当前用户某日的所有数据，按commitTime正序排序。若无timestamp，则返回今日的所有数据。
+- /api/{token}/date
+- /api/{token}/date/{timeMills}
 
-creq:
-- Long timestamp
+method:GET
+
+获取当前用户某日的所有数据，按commitTime正序排序。若无timeMills，则返回今日的所有数据。
 
 res:
 - 名为measures的measure对象列表。
 
-## /api/{token}/latest
+## /api/{token}/latest/{fromTimeMills}/{toTimeMills}
 
-method:POST
+接受的缺省形式：
+
+- /api/{token}/latest
+- /api/{token}/latest/{fromTimeMills}
+- /api/{token}/latest//{toTimeMills}
+- /api/{token}/latest/{fromTimeMills}/{toTimeMills}
+
+method:GET
 
 获取当前用户某段日期中的每天的最新的数据，按commitTime正序排序。
-1. 若无fromTime属性和toTime属性，则直接返回最新的一条数据。
-2. 若无fromTime属性，则返回从toTime日期一年前截至toTime日期的每天的最新一条数据。
-3. 若无toTime属性，则从fromTime日期到今日的最新一条数据。
-4. 若有fromTime属性和toTime属性，则返回从fromTime日期到toTime日期之间的最新一条数据。
-
-creq:
-- Long fromTime
-- Long toTime
+1. 若无fromTimeMills属性和toTimeMills属性，则直接返回最新的一条数据。
+2. 若无fromTimeMills属性，则返回从toTimeMills日期一年前截至toTimeMills日期的每天的最新一条数据。
+3. 若无toTimeMills属性，则从fromTimeMills日期到今日的最新一条数据。
+4. 若有fromTimeMills属性和toTimeMills属性，则返回从fromTimeMills日期到toTimeMills日期之间的最新一条数据。
 
 res:
 - 名为measures的measure对象列表。
+
+## /api/{token}
+
+method:POST
+
+以当前token身份向服务器存储一组数据。
+
+req:
+ - Long commitTime
+ - String device
+creq:
+ - Integer step
+ - Integer distance
+ - Integer heart

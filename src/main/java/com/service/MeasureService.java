@@ -1,8 +1,10 @@
 package com.service;
 
+import com.Exception.RequireInformationException;
 import com.Exception.SQLNotFoundException;
 import com.dao.MeasureDao;
 import com.entity.MeasureEntity;
+import com.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -103,5 +105,16 @@ public class MeasureService {
             }
         }
         return list;
+    }
+    //添加数据
+    public void addData(String accountNumber,Long commitTimeMills,String device,Integer step, Integer distance, Integer heart){
+        MeasureEntity measureEntity=new MeasureEntity();
+        measureEntity.setAccountNumber(accountNumber);
+        measureEntity.setCommitTime(new Timestamp(commitTimeMills));
+        measureEntity.setDevice(device);
+        measureEntity.setStep(step);
+        measureEntity.setDistance(distance);
+        measureEntity.setHeart(heart);
+        measureDao.add(measureEntity);
     }
 }

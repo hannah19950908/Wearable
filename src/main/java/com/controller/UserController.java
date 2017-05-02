@@ -36,7 +36,7 @@ public class UserController {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         String password = Md5Encoder((String) map.get("password"));
-        map.put("password", password);
+        map.remove("password");
         UserEntity userEntity = userService.findByAccountNumberAndPassword(accountNumber, password);
         if (userEntity == null) {
             throw new AuthenticationException();
@@ -50,20 +50,16 @@ public class UserController {
     public String setup(@RequestBody String mapString) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
-        UserEntity userEntity = userService.findByAccountNumber(accountNumber);
-        if (userEntity == null) {
-            System.out.println(userEntity);
-            String password = Md5Encoder((String) map.get("password"));
-            map.put("password", password);
-            String userName = (String) map.get("userName");
-            String phone = (String) map.get("phone");
-            String relativeName = (String) map.get("relativeName");
-            String relativePhone = (String) map.get("relativePhone");
-            String email = (String) map.get("email");
-            if (userService.addByInformation(accountNumber, password, userName, phone, relativeName, relativePhone, email))
-                map.put("token", tokenService.generateToken(accountNumber));
-            else throw new RuntimeException();
-        } else throw new UserSetupException();
+        String password = Md5Encoder((String) map.get("password"));
+        map.remove("password");
+        String userName = (String) map.get("userName");
+        String phone = (String) map.get("phone");
+        String relativeName = (String) map.get("relativeName");
+        String relativePhone = (String) map.get("relativePhone");
+        String email = (String) map.get("email");
+        if (userService.addByInformation(accountNumber, password, userName, phone, relativeName, relativePhone, email))
+            map.put("token", tokenService.generateToken(accountNumber));
+        else throw new UserSetupException();
         return JSONUtil.toJSON(map);
     }
 
@@ -71,7 +67,7 @@ public class UserController {
     public String display(@PathVariable String token) throws Exception {
         Map map = new HashMap();
         String accountNumber = tokenService.getAccountNumber(token);
-        if(accountNumber==null) throw new TokenException();
+        if (accountNumber == null) throw new TokenException();
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
         userEntity.setPassword(null);
         map.put("user", userEntity);
@@ -82,7 +78,7 @@ public class UserController {
     public String edit(@PathVariable String token, @RequestBody String mapString) throws Exception {
         Map map = JSONUtil.parseMap(mapString);
         String accountNumber = tokenService.getAccountNumber(token);
-        if(accountNumber==null) throw new TokenException();
+        if (accountNumber == null) throw new TokenException();
         String newPasswordNotEncoded = (String) map.get("newPassword");
         String newPassword = null;
         if (newPasswordNotEncoded != null) {
@@ -101,15 +97,15 @@ public class UserController {
     @RequestMapping(value = "{token}", method = RequestMethod.DELETE)
     public void logout(@PathVariable String token) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if(accountNumber==null) throw new TokenException();
+        if (accountNumber == null) throw new TokenException();
         tokenService.delete(token);
     }
 
     @RequestMapping(value = "{token}/user", method = RequestMethod.DELETE)
     public void delete(@PathVariable String token) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if(accountNumber==null) throw new TokenException();
+        if (accountNumber == null) throw new TokenException();
         tokenService.delete(token);
-        if(!userService.deleteByAccountNumber(accountNumber)) throw new RuntimeException();
+        if (!userService.deleteByAccountNumber(accountNumber)) throw new RuntimeException();
     }
 }

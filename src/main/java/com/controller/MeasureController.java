@@ -1,6 +1,8 @@
 package com.controller;
 
+import com.Exception.RequireInformationException;
 import com.Exception.TokenException;
+import com.entity.MeasureEntity;
 import com.service.MeasureService;
 import com.service.TokenService;
 import com.util.JSONUtil;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,25 +32,32 @@ public class MeasureController {
         this.tokenService = tokenService;
     }
 
-    @RequestMapping(value = "{token}/someDayData", method = RequestMethod.POST)
-    public String getByDate(@PathVariable String token, @RequestBody(required = false) String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+    @RequestMapping({"{token}/date",
+            "{token}/date/",
+            "{token}/date/{timeMills}"})
+    public String getByDate
+            (@PathVariable String token, @PathVariable(required = false) Long timeMills)
+            throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
-        Long timeMills = (Long) map.get("timestamp");
         List list;
         if (timeMills == null) list = measureService.findTodayDataByAccountNumber(accountNumber);
         else list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
+        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
     }
 
-    @RequestMapping(value = "{token}/latest", method = RequestMethod.POST)
-    public String getEachDateLatestByDateRange(@PathVariable String token, @RequestBody(required = false) String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+    @RequestMapping({"{token}/latest",
+            "{token}/latest/",
+            "{token}/latest//",
+            "{token}/latest/{fromTimeMills}",
+            "{token}/latest/{fromTimeMills}/",
+            "{token}/latest//{toTimeMills}",
+            "{token}/latest/{fromTimeMills}/{toTimeMills}"})
+    public String getEachDateLatestByDateRange
+            (@PathVariable String token, @PathVariable(required = false) Long fromTimeMills,@PathVariable(required = false) Long toTimeMills)
+            throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
-        Long fromTimeMills = (Long) map.get("fromTime");
-        Long toTimeMills = (Long) map.get("toTime");
         List list;
         if (fromTimeMills == null && toTimeMills == null) {
             list = new ArrayList();
@@ -58,16 +68,21 @@ public class MeasureController {
             list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber, new Timestamp(fromTimeMills), new Timestamp(System.currentTimeMillis()));
         else
             list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
+        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
     }
 
-    @RequestMapping(value = "{token}/data", method = RequestMethod.POST)
-    public String getAllByTimeRange(@PathVariable String token, @RequestBody(required = false) String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+    @RequestMapping({"{token}/data",
+            "{token}/data/",
+            "{token}/data//",
+            "{token}/data/{fromTimeMills}",
+            "{token}/data/{fromTimeMills}/",
+            "{token}/data//{toTimeMills}",
+            "{token}/data/{fromTimeMills}/{toTimeMills}"})
+    public String getAllByTimeRange
+            (@PathVariable String token,@PathVariable(required = false) Long fromTimeMills,@PathVariable(required = false) Long toTimeMills)
+            throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
-        Long fromTimeMills = (Long) map.get("fromTime");
-        Long toTimeMills = (Long) map.get("toTime");
         List list;
         if (fromTimeMills == null && toTimeMills == null) {
             list = measureService.findAllDataByAccountNumber(accountNumber);
@@ -77,7 +92,17 @@ public class MeasureController {
             list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(0), new Timestamp(toTimeMills));
         else
             list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(map, list));
+        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
+    }
+    @RequestMapping(value = "{token}",method = RequestMethod.POST)
+    public void addData(@PathVariable String token,@RequestBody String mapString) throws Exception{
+        Map map=JSONUtil.parseMap(mapString);
+        String accountNumber=tokenService.getAccountNumber(token);
+        Long commitTimeMills=(Long)map.get("commitTime");
+        String device=(String)map.get("device");
+        Integer step=(Integer)map.get("step");
+        Integer distance=(Integer)map.get("distance");
+        Integer heart=(Integer)map.get("heart");
+        measureService.addData(accountNumber,commitTimeMills,device,step,distance,heart);
     }
 }
