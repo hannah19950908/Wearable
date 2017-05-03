@@ -258,6 +258,7 @@ method:POST
 req:
  - Long commitTime
  - String device
+ 
 creq:
  - Integer step
  - Integer distance
