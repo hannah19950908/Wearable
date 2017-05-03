@@ -33,7 +33,6 @@ public class MeasureController {
     }
 
     @RequestMapping({"{token}/date",
-            "{token}/date/",
             "{token}/date/{timeMills}"})
     public String getByDate
             (@PathVariable String token, @PathVariable(required = false) Long timeMills)
@@ -47,11 +46,9 @@ public class MeasureController {
     }
 
     @RequestMapping({"{token}/latest",
-            "{token}/latest/",
-            "{token}/latest//",
             "{token}/latest/{fromTimeMills}",
             "{token}/latest/{fromTimeMills}/",
-            "{token}/latest//{toTimeMills}",
+            "{token}/latest/t{toTimeMills}",
             "{token}/latest/{fromTimeMills}/{toTimeMills}"})
     public String getEachDateLatestByDateRange
             (@PathVariable String token, @PathVariable(required = false) Long fromTimeMills,@PathVariable(required = false) Long toTimeMills)
@@ -72,11 +69,9 @@ public class MeasureController {
     }
 
     @RequestMapping({"{token}/data",
-            "{token}/data/",
-            "{token}/data//",
             "{token}/data/{fromTimeMills}",
             "{token}/data/{fromTimeMills}/",
-            "{token}/data//{toTimeMills}",
+            "{token}/data/t{toTimeMills}",
             "{token}/data/{fromTimeMills}/{toTimeMills}"})
     public String getAllByTimeRange
             (@PathVariable String token,@PathVariable(required = false) Long fromTimeMills,@PathVariable(required = false) Long toTimeMills)

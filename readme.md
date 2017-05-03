@@ -200,7 +200,7 @@ mehod:DELETE
 
 - /api/{token}/data
 - /api/{token}/data/{fromTimeMills}
-- /api/{token}/data//{toTimeMills}
+- /api/{token}/data/t{toTimeMills}
 - /api/{token}/data/{fromTimeMills}/{toTimeMills}
 
 method:GET
@@ -235,7 +235,7 @@ res:
 
 - /api/{token}/latest
 - /api/{token}/latest/{fromTimeMills}
-- /api/{token}/latest//{toTimeMills}
+- /api/{token}/latest/t{toTimeMills}
 - /api/{token}/latest/{fromTimeMills}/{toTimeMills}
 
 method:GET
