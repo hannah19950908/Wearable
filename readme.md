@@ -1,5 +1,9 @@
 # 重要更新
 
+## 2017-5-03
+
+- 重新设计了部分api，目前所有查询方法均使用RESTful-API推荐的纯GET方法。并混合使用了PathViarable和RequestParam。
+
 ## 2017-5-01
 
 - 为项目添加了ehcache作为hibernate的L2缓存，优化了查询。
@@ -24,6 +28,7 @@
 - 本文档中地址均为该基地址的相对地址，如，注册API为 http://ecs.jimstar.top:8080/Wear_war/api/user。
 - 所有API均使用HTTP状态码进行响应，若功能正常，则状态码为200，无其他提示；若发生异常，则返回对应HTTP状态码和异常原因。
 - 对于请求中有Body的API，这些内容会在响应中被返回，便于识别和提取。
+- 对于GET方法的请求，如果有需要添加参数，则直接添加变量；对于其他方法，如果有需要参数，则在Body中以JSON的格式。
 - 所有API均遵守RESTful风格，使用了GET,POST,PUT,DELETE四种HTTP方法。
 - 每个token在缓存中的生命周期为一小时，超时后，需要重新申请token。此后为适应移动端需求，可能会对生命周期有所调整。
 - 对于目前的阶段性版本，开发和本地测试已经完成。
@@ -31,7 +36,7 @@
 # 文档说明
 
 - 对服务器API文档有任何疑问，请联系服务器代码作者孙博宇 邮箱：cielosun@outlook.com qq:632898354。
-- 本文档中，req为必须请求参数，creq为可选请求参数，res为返回参数。
+- 本文档中，req为必须请求参数，creq为可选请求参数，res为返回参数, eq为请求例子。
 - 本文档中{token}这种格式表示从服务器获取的某个变量。例如：http://ecs.jimstar.top:8080/Wear_war/api/64d2915eb0a54e2b93bcdef71b812961/data，其中64d2915eb0a54e2b93bcdef71b812961对应{token}，该字符串在登录/注册操作时可以从响应中获取。
 
 请求样例：
@@ -212,6 +217,12 @@ creq:
 res:
 - 名为measures的measure对象列表。
 
+eq:
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?fromTimeMills=1492588971000
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?toTimeMills=1492675371000
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?fromTimeMills=1492588971000&toTimeMills=1492675371000
+
 ## /api/{token}/date
 
 method:GET
@@ -223,6 +234,10 @@ creq:
 
 res:
 - 名为measures的measure对象列表。
+
+eq:
+- http://ecs.jimstar.top:8080/Wear_war/api/54b1ee63548d4bc3987e206c3ed6ff79/date
+- http://ecs.jimstar.top:8080/Wear_war/api/54b1ee63548d4bc3987e206c3ed6ff79/date?timeMills=1492588971000
 
 ## /api/{token}/latest
 
@@ -240,6 +255,12 @@ creq:
 
 res:
 - 名为measures的measure对象列表。
+
+eq:
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?fromTimeMills=1492588971000
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?toTimeMills=1492675371000
+- http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?fromTimeMills=1492588971000&toTimeMills=1492675371000
 
 ## /api/{token}
 
