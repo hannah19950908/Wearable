@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "measure", schema = "wearable", catalog = "")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MeasureEntity {
     private String accountNumber;
     private Timestamp commitTime;
