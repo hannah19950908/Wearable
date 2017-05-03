@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Your token is invalid.")
 public class TokenException extends Exception{
+    public TokenException(){
+        super("Your token is invalid.");
+    }
 }

@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST,reason = "Your require data is null or wrong.")
 public class RequireInformationException extends Exception{
+    public RequireInformationException(){
+        super("Your require data is null or wrong.");
+    }
 }

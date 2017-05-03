@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND,reason = "No information found.")
 public class SQLNotFoundException extends Exception {
+    public SQLNotFoundException(){
+        super("No information found.");
+    }
 }

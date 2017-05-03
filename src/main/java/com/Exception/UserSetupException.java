@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.CONFLICT,reason = "The account has exists")
 public class UserSetupException extends Exception {
+    public UserSetupException(){
+        super("The account has exists");
+    }
 }
