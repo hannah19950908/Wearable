@@ -32,10 +32,9 @@ public class MeasureController {
         this.tokenService = tokenService;
     }
 
-    @RequestMapping({"{token}/date",
-            "{token}/date/{timeMills}"})
+    @RequestMapping({"{token}/date"})
     public String getByDate
-            (@PathVariable String token, @PathVariable(required = false) Long timeMills)
+            (@PathVariable String token, @RequestParam(required = false) Long timeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
@@ -45,13 +44,9 @@ public class MeasureController {
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
     }
 
-    @RequestMapping({"{token}/latest",
-            "{token}/latest/{fromTimeMills}",
-            "{token}/latest/{fromTimeMills}/",
-            "{token}/latest/t{toTimeMills}",
-            "{token}/latest/{fromTimeMills}/{toTimeMills}"})
+    @RequestMapping({"{token}/latest"})
     public String getEachDateLatestByDateRange
-            (@PathVariable String token, @PathVariable(required = false) Long fromTimeMills,@PathVariable(required = false) Long toTimeMills)
+            (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills,@RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
@@ -68,13 +63,9 @@ public class MeasureController {
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
     }
 
-    @RequestMapping({"{token}/data",
-            "{token}/data/{fromTimeMills}",
-            "{token}/data/{fromTimeMills}/",
-            "{token}/data/t{toTimeMills}",
-            "{token}/data/{fromTimeMills}/{toTimeMills}"})
+    @RequestMapping({"{token}/data"})
     public String getAllByTimeRange
-            (@PathVariable String token,@PathVariable(required = false) Long fromTimeMills,@PathVariable(required = false) Long toTimeMills)
+            (@PathVariable String token,@RequestParam(required = false) Long fromTimeMills,@RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();

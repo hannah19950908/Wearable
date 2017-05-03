@@ -194,14 +194,7 @@ mehod:DELETE
 
 对于所有时间请求，请以UNIX毫秒数（例如：1492661406000）的形式发送。
 
-## /api/{token}/data/{fromTimeMills}/{toTimeMills}
-
-接受的缺省形式：
-
-- /api/{token}/data
-- /api/{token}/data/{fromTimeMills}
-- /api/{token}/data/t{toTimeMills}
-- /api/{token}/data/{fromTimeMills}/{toTimeMills}
+## /api/{token}/data
 
 method:GET
 
@@ -212,31 +205,26 @@ method:GET
 3. 若无toTimeMills属性，则从fromTimeMills到当前时间的所有数据。
 4. 若有fromTimeMills属性和toTimeMills属性，则返回从fromTimeMills到toTimeMills之间的所有数据。
 
+creq:
+- Long fromTimeMills
+- Long toTimeMills
+
 res:
 - 名为measures的measure对象列表。
 
-## /api/{token}/date/{timeMills}
-
-接受的缺省形式：
-
-- /api/{token}/date
-- /api/{token}/date/{timeMills}
+## /api/{token}/date
 
 method:GET
 
 获取当前用户某日的所有数据，按commitTime正序排序。若无timeMills，则返回今日的所有数据。
 
+creq:
+- Long timeMills
+
 res:
 - 名为measures的measure对象列表。
 
-## /api/{token}/latest/{fromTimeMills}/{toTimeMills}
-
-接受的缺省形式：
-
-- /api/{token}/latest
-- /api/{token}/latest/{fromTimeMills}
-- /api/{token}/latest/t{toTimeMills}
-- /api/{token}/latest/{fromTimeMills}/{toTimeMills}
+## /api/{token}/latest
 
 method:GET
 
@@ -245,6 +233,10 @@ method:GET
 2. 若无fromTimeMills属性，则返回从toTimeMills日期一年前截至toTimeMills日期的每天的最新一条数据。
 3. 若无toTimeMills属性，则从fromTimeMills日期到今日的最新一条数据。
 4. 若有fromTimeMills属性和toTimeMills属性，则返回从fromTimeMills日期到toTimeMills日期之间的最新一条数据。
+
+creq:
+- Long fromTimeMills
+- Long toTimeMills
 
 res:
 - 名为measures的measure对象列表。
