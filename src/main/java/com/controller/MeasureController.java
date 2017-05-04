@@ -75,7 +75,7 @@ public class MeasureController {
         } else if (toTimeMills == null)
             list = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
         else if (fromTimeMills == null)
-            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(0), new Timestamp(toTimeMills));
+            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
         else
             list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));

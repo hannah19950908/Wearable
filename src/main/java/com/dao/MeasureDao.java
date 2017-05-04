@@ -26,32 +26,29 @@ public class MeasureDao {
     }
     public List findByAccountNumber(String accountNumber){
         List list = hibernateTemplate.find
-                ("from MeasureEntity measureEntity where measureEntity.accountNumber=? order by commitTime,id",new Object[]{accountNumber});
+                ("from MeasureEntity where accountNumber=? order by commitTime,id",new Object[]{accountNumber});
         return list.isEmpty()?null:list;
     }
     public List findByAccountNumberAndTime(String accountNumber, Timestamp fromTime, Timestamp toTime){
-        return hibernateTemplate.find("from MeasureEntity measureEntity where measureEntity.accountNumber=? " +
-                "and measureEntity.commitTime>=? " +
-                "and measureEntity.commitTime<=? " +
-                "order by measureEntity.commitTime,measureEntity.id",
+        return hibernateTemplate.find("from MeasureEntity where accountNumber=? " +
+                        "and commitTime between ? and ? order by commitTime",
                 new Object[]{accountNumber,fromTime,toTime});
     }
     public MeasureEntity findTheLatestByAccountNumberAndTime(String accountNumber, Timestamp fromTime, Timestamp toTime){
-        List list = hibernateTemplate.find("from MeasureEntity measureEntity where accountNumber = ? " +
-                "and measureEntity.commitTime >= ?" +
-                "and measureEntity.commitTime <= ?" +
-                "order by measureEntity.commitTime desc, measureEntity.id desc",
-                new Object[]{accountNumber,fromTime,toTime});
+        List list=hibernateTemplate.find("from MeasureEntity where commitTime in " +
+                "(select max(commitTime) from MeasureEntity where accountNumber=?" +
+                "and commitTime between ? and ?)",new Object[]{accountNumber,fromTime,toTime});
         return list.isEmpty()?null:(MeasureEntity)list.get(0);
     }
     public MeasureEntity findTheLatestByAccountNumber(String accountNumber){
         List list=hibernateTemplate.
-                find("from MeasureEntity measureEntity where measureEntity.accountNumber=? " +
-                        "order by commitTime desc",new Object[]{accountNumber});
+                find("from MeasureEntity where commitTime in " +
+                        "(select max(commitTime) from MeasureEntity where accountNumber=?)",new Object[]{accountNumber});
         return list.isEmpty()?null:(MeasureEntity)list.get(0);
     }
     public MeasureEntity findTheFirstByAccountNumber(String accountNumber){
-        List list=hibernateTemplate.find("from MeasureEntity where accountNumber=? and id=1",new Object[]{accountNumber});
+        List list=hibernateTemplate.find("from MeasureEntity where commitTime in " +
+                "(select min(commitTime) from MeasureEntity where accountNumber=?)",new Object[]{accountNumber});
         return list.isEmpty()?null:(MeasureEntity) list.get(0);
     }
     @Transactional
