@@ -11,15 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 
 /**
  * Created by 63289 on 2017/4/19.
  */
-@CrossOrigin(value = "*", maxAge = 3600)
+@CrossOrigin
 @RestController
 @RequestMapping(value = "api", produces = "application/json;charset=UTF-8")
 public class MeasureController {
@@ -33,11 +31,8 @@ public class MeasureController {
     }
 
     @RequestMapping({"{token}/date"})
-    public String getByDate
-            (@PathVariable String token, @RequestParam(required = false) Long timeMills)
-            throws Exception {
+    public String getByDate(@PathVariable String token, @RequestParam(required = false) Long timeMills) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new TokenException();
         List list;
         if (timeMills == null) list = measureService.findTodayDataByAccountNumber(accountNumber);
         else list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
@@ -46,10 +41,9 @@ public class MeasureController {
 
     @RequestMapping({"{token}/latest"})
     public String getEachDateLatestByDateRange
-            (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills,@RequestParam(required = false) Long toTimeMills)
+            (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills, @RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new TokenException();
         List list;
         if (fromTimeMills == null && toTimeMills == null) {
             list = new ArrayList();
@@ -65,10 +59,9 @@ public class MeasureController {
 
     @RequestMapping({"{token}/data"})
     public String getAllByTimeRange
-            (@PathVariable String token,@RequestParam(required = false) Long fromTimeMills,@RequestParam(required = false) Long toTimeMills)
+            (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills, @RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        if (accountNumber == null) throw new TokenException();
         List list;
         if (fromTimeMills == null && toTimeMills == null) {
             list = measureService.findAllDataByAccountNumber(accountNumber);
@@ -80,15 +73,16 @@ public class MeasureController {
             list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
         return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
     }
-    @RequestMapping(value = "{token}",method = RequestMethod.POST)
-    public void addData(@PathVariable String token,@RequestBody String mapString) throws Exception{
-        Map map=JSONUtil.parseMap(mapString);
-        String accountNumber=tokenService.getAccountNumber(token);
-        Long commitTimeMills=(Long)map.get("commitTime");
-        String device=(String)map.get("device");
-        Integer step=(Integer)map.get("step");
-        Integer distance=(Integer)map.get("distance");
-        Integer heart=(Integer)map.get("heart");
-        measureService.addData(accountNumber,commitTimeMills,device,step,distance,heart);
+
+    @RequestMapping(value = "{token}", method = RequestMethod.POST)
+    public void addData(@PathVariable String token, @RequestBody String mapString) throws Exception {
+        Map map = JSONUtil.parseMap(mapString);
+        String accountNumber = tokenService.getAccountNumber(token);
+        Long commitTimeMills = (Long) map.get("commitTime");
+        String device = (String) map.get("device");
+        Integer step = (Integer) map.get("step");
+        Integer distance = (Integer) map.get("distance");
+        Integer heart = (Integer) map.get("heart");
+        measureService.addData(accountNumber, commitTimeMills, device, step, distance, heart);
     }
 }
