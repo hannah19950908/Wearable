@@ -1,6 +1,7 @@
 package com.entity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "measure", schema = "wearable", catalog = "")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Proxy(lazy = false)
 public class MeasureEntity {
     private String accountNumber;
     private Timestamp commitTime;

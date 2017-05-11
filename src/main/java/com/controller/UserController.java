@@ -1,11 +1,10 @@
 package com.controller;
 
-import com.Exception.TokenException;
 import com.Exception.UserSetupException;
 import com.entity.UserEntity;
 import com.service.TokenService;
 import com.service.UserService;
-import com.util.JSONUtil;
+import com.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,7 @@ import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.util.DigestUtil.Md5Encoder;
+import static com.util.DigestUtils.Md5Encoder;
 
 /**
  * Created by 63289 on 2017/2/25.
@@ -33,7 +32,7 @@ public class UserController {
 
     @RequestMapping(value = "token", method = RequestMethod.POST)
     public String login(@RequestBody String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+        Map map = JSONUtils.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         String password = Md5Encoder((String) map.get("password"));
         map.remove("password");
@@ -43,12 +42,12 @@ public class UserController {
         } else {
             map.put("token", tokenService.generateToken(accountNumber));
         }
-        return JSONUtil.toJSON(map);
+        return JSONUtils.toJSON(map);
     }
 
     @RequestMapping(value = "user", method = RequestMethod.POST)
     public String setup(@RequestBody String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+        Map map = JSONUtils.parseMap(mapString);
         String accountNumber = (String) map.get("accountNumber");
         String password = Md5Encoder((String) map.get("password"));
         map.remove("password");
@@ -60,7 +59,7 @@ public class UserController {
         if (userService.addByInformation(accountNumber, password, userName, phone, relativeName, relativePhone, email))
             map.put("token", tokenService.generateToken(accountNumber));
         else throw new UserSetupException();
-        return JSONUtil.toJSON(map);
+        return JSONUtils.toJSON(map);
     }
 
     @RequestMapping(value = "{token}", method = RequestMethod.GET)
@@ -70,12 +69,12 @@ public class UserController {
         UserEntity userEntity = userService.findByAccountNumber(accountNumber);
         userEntity.setPassword(null);
         map.put("user", userEntity);
-        return JSONUtil.toJSON(map);
+        return JSONUtils.toJSON(map);
     }
 
     @RequestMapping(value = "{token}", method = RequestMethod.PUT)
     public String edit(@PathVariable String token, @RequestBody String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+        Map map = JSONUtils.parseMap(mapString);
         String accountNumber = tokenService.getAccountNumber(token);
         String newPasswordNotEncoded = (String) map.get("newPassword");
         String newPassword = null;
@@ -89,7 +88,7 @@ public class UserController {
         String email = (String) map.get("email");
         if (!userService.updateByInformation(accountNumber, newPassword, userName, phone, relativeName, relativePhone, email))
             throw new RuntimeException();
-        return JSONUtil.toJSON(map);
+        return JSONUtils.toJSON(map);
     }
 
     @RequestMapping(value = "{token}", method = RequestMethod.DELETE)

@@ -12,7 +12,8 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class TokenDao {
     private final RedisTemplate<String, String> redisTemplate;
-    private final static long validTime=30;
+    private final static long validTime=1;
+    private final static long cacheLiveTime=10;
 
     @Autowired
     public TokenDao(RedisTemplate redisTemplate) {
@@ -20,11 +21,19 @@ public class TokenDao {
     }
 
     public void put(String token, String accountNumber) {
-        redisTemplate.boundValueOps(token).set(accountNumber,validTime,TimeUnit.MINUTES);
+        redisTemplate.boundValueOps(token).set(accountNumber,validTime,TimeUnit.HOURS);
     }
 
     public String get(String token) {
         return redisTemplate.opsForValue().get(token);
+    }
+
+    public Boolean hasCache(String accountNumber){
+        if(redisTemplate.opsForValue().get(accountNumber)==null){
+            redisTemplate.boundValueOps(accountNumber).set("true",cacheLiveTime,TimeUnit.MINUTES);
+            return false;
+        }
+        return true;
     }
 
     public void delete(String token){

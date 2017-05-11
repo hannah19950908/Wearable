@@ -13,7 +13,7 @@ import java.util.zip.CheckedInputStream;
 /**
  * Created by 63289 on 2017/4/18.
  */
-public class DigestUtil {
+public class DigestUtils {
 
     private static MessageDigest Md5Instance;
 

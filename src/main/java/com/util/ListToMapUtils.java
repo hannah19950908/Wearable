@@ -2,14 +2,12 @@ package com.util;
 
 import com.Exception.SQLNotFoundException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by 63289 on 2017/4/19.
  */
-public class ListToMapUtil {
+public class ListToMapUtils {
     public static Map ListToMap(List list)throws Exception{
         Map map=new HashMap();
         return ListToMap(map,list);

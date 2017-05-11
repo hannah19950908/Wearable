@@ -2,18 +2,17 @@ package com.controller;
 
 import com.Exception.TokenException;
 import com.service.MeasureService;
+import com.service.TestService;
 import com.service.TokenService;
-import com.util.JSONUtil;
-import com.util.ListToMapUtil;
+import com.util.JSONUtils;
+import com.util.ListToMapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by 63289 on 2017/5/8.
@@ -24,15 +23,17 @@ import java.util.Random;
 public class TestController {
     private final TokenService tokenService;
     private final MeasureService measureService;
+    private final TestService testService;
 
     @Autowired
-    public TestController(TokenService tokenService, MeasureService measureService) {
+    public TestController(TokenService tokenService, MeasureService measureService, TestService testService) {
         this.tokenService = tokenService;
         this.measureService = measureService;
+        this.testService = testService;
     }
 
     @RequestMapping({"{token}/date/time"})
-    public String getByDate(@PathVariable String token, @RequestParam(required = false) Long timeMills) throws Exception {
+    public String testTimeCost(@PathVariable String token, @RequestParam(required = false) Long timeMills) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
         List list;
@@ -42,26 +43,51 @@ public class TestController {
         Long useTime = LocalTime.now().toNanoOfDay() - startTime.toNanoOfDay();
         Map map = new HashMap();
         map.put("costTimeInMiili", useTime / 1000000);
-        if (useTime > 0) return JSONUtil.toJSON(map);
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
+        map.put("objectAmount",list.size());
+        if (useTime > 0) return JSONUtils.toJSON(map);
+        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
+    }
+    @RequestMapping({"{token}/data/time"})
+    public String testTimeCostLikeData
+            (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills, @RequestParam(required = false) Long toTimeMills)
+            throws Exception {
+        String accountNumber = tokenService.getAccountNumber(token);
+        List list;
+        LocalTime startTime = LocalTime.now();
+        if (fromTimeMills == null && toTimeMills == null) {
+            list = measureService.findAllDataByAccountNumber(accountNumber);
+        } else if (toTimeMills == null)
+            list = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
+        else if (fromTimeMills == null)
+            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
+        else
+            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
+        Long useTime = LocalTime.now().toNanoOfDay() - startTime.toNanoOfDay();
+        Map map = new HashMap();
+        map.put("costTimeInMiili", useTime / 1000000);
+        map.put("objectAmount",list.size());
+        if (useTime > 0) return JSONUtils.toJSON(map);
+        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
     }
     @RequestMapping("{token}/random/{number}")
     public void generateData(@PathVariable String token, @PathVariable Integer number) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        Random random = new Random();
-        Integer step = 0;
-        Integer distance = 0;
-        Integer heart = 40;
-        for (int i = 0; i < number; ++i) {
-            Long commitTime = System.currentTimeMillis() + i - number;
-            String device = "00-00-00-00-00-00-00-00";
-            if (i % 100 == 0) {
-                Integer change = random.nextInt(2);
-                step += change;
-                distance += change / (1 + random.nextInt(1));
-                heart = 40 + change * 10 + random.nextInt(20);
-            } else heart = 40 + random.nextInt(20);
-            measureService.addData(accountNumber, commitTime, device, step, distance, heart);
-        }
+        testService.randomGenerate(accountNumber, number);
+    }
+    @RequestMapping("/payload")
+    public String payloadJSONRPC(@RequestHeader HttpHeaders httpHeaders, @RequestBody String mapString) throws Exception{
+        Map map = JSONUtils.parseMap(mapString);
+        Map params=(Map)map.get("params");
+        if((map.get("method")).equals("login")) return testService.caclulatePayload(httpHeaders,mapString,params);
+        String token=(String)params.get("token");
+        return testService.caclulatePayload(httpHeaders,mapString,token);
+    }
+    @RequestMapping("/token/payload")
+    public String loginPayloadREST(@RequestHeader HttpHeaders httpHeaders, @RequestBody String mapString) throws Exception{
+        return testService.caclulatePayload(httpHeaders,mapString, JSONUtils.parseMap(mapString));
+    }
+    @RequestMapping("{token}/payload")
+    public String getInfoPayloadREST(@RequestHeader HttpHeaders httpHeaders, @PathVariable String token) throws Exception{
+        return testService.caclulatePayload(httpHeaders,null,token);
     }
 }

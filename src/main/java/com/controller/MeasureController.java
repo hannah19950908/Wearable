@@ -1,17 +1,13 @@
 package com.controller;
 
-import com.Exception.RequireInformationException;
-import com.Exception.TokenException;
-import com.entity.MeasureEntity;
 import com.service.MeasureService;
 import com.service.TokenService;
-import com.util.JSONUtil;
-import com.util.ListToMapUtil;
+import com.util.JSONUtils;
+import com.util.ListToMapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -36,7 +32,7 @@ public class MeasureController {
         List list;
         if (timeMills == null) list = measureService.findTodayDataByAccountNumber(accountNumber);
         else list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
+        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
     }
 
     @RequestMapping({"{token}/latest"})
@@ -54,7 +50,7 @@ public class MeasureController {
             list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber, new Timestamp(fromTimeMills), new Timestamp(System.currentTimeMillis()));
         else
             list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
+        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
     }
 
     @RequestMapping({"{token}/data"})
@@ -71,12 +67,12 @@ public class MeasureController {
             list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
         else
             list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-        return JSONUtil.toJSON(ListToMapUtil.ListToMap(list));
+        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
     }
 
     @RequestMapping(value = "{token}", method = RequestMethod.POST)
     public void addData(@PathVariable String token, @RequestBody String mapString) throws Exception {
-        Map map = JSONUtil.parseMap(mapString);
+        Map map = JSONUtils.parseMap(mapString);
         String accountNumber = tokenService.getAccountNumber(token);
         Long commitTimeMills = (Long) map.get("commitTime");
         String device = (String) map.get("device");
