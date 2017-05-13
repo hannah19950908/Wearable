@@ -1,0 +1,288 @@
+<!--
+  Created by IntelliJ IDEA.
+  User: 63289
+  Date: 2017/4/17
+  Time: 11:03
+  To change this template use File | Settings | File Templates.
+-->
+<html><head><meta charset='utf-8'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.4.1/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+    <link rel="stylesheet" href="https://gitcdn.xyz/repo/goessner/mdmath/master/css/mdmath.css">
+</head><body class="markdown-body">
+<h1>重要更新</h1>
+<h2>2017-5-12</h2>
+<ul>
+    <li>修复了序列化过慢的问题和Redis判断机制错误问题，真正的加快了查询。</li>
+</ul>
+<h2>2017-5-11</h2>
+<ul>
+    <li>重写了查询机制，充分利用了缓存，通过利用Redis记录状态的方法设置Ehcache，智能的使用缓存。</li>
+</ul>
+<h2>2017-5-4</h2>
+<ul>
+    <li>重写了重要查询语句，重建了索引，大幅度优化了查询速度。</li>
+</ul>
+<h2>2017-5-3</h2>
+<ul>
+    <li>重新设计了部分api，目前所有查询方法均使用RESTful-API推荐的纯GET方法。并混合使用了PathViarable和RequestParam。</li>
+</ul>
+<h2>2017-5-1</h2>
+<ul>
+    <li>为项目添加了ehcache作为hibernate的L2缓存，优化了查询。</li>
+</ul>
+<h2>2017-4-30</h2>
+<ul>
+    <li>使用Maven重构了项目，目前该项目为纯Maven项目，对项目的迁移和扩展更加友好。</li>
+    <li>优化了数据库和查找方式，加速了某几个接口的查找速度。</li>
+</ul>
+<h2>2017-4-27</h2>
+<ul>
+    <li>对API风格进行了大的调整，改为RESTful风格。旧的代码和旧的文档会置于old分支。</li>
+    <li>使用了redis作为缓存，替代了session机制，配合RESTful-api，实现了同时和WEB前端+Android手机端进行交互。</li>
+</ul>
+<h2>2017-4-23</h2>
+<ul>
+    <li>为了后续对Android等可能不支持session的前端的开发支持，现实现了纯RESTful设计模式，原web api不变，均可继续使用。文档中areq为更新后，不能使用session的设备需要添加的请求。</li>
+</ul>
+<h1>公共说明</h1>
+<ul>
+    <li>测试端口的基地址为http://ecs.jimstar.top:8080/Wear_war/。</li>
+    <li>本文档中地址均为该基地址的相对地址，如，注册API为 <a href="http://ecs.jimstar.top:8080/Wear_war/api/user%E3%80%82">http://ecs.jimstar.top:8080/Wear_war/api/user。</a></li>
+    <li>所有API均使用HTTP状态码进行响应，若功能正常，则状态码为200，无其他提示；若发生异常，则返回对应HTTP状态码和异常原因。</li>
+    <li>对于请求中有Body的API，这些内容会在响应中被返回，便于识别和提取。</li>
+    <li>对于GET方法的请求，如果有需要添加参数，则直接添加变量；对于其他方法，如果有需要参数，则在Body中以JSON的格式。</li>
+    <li>所有API均遵守RESTful风格，使用了GET,POST,PUT,DELETE四种HTTP方法。</li>
+    <li>每个token在缓存中的生命周期为一小时，超时后，需要重新申请token。此后为适应移动端需求，可能会对生命周期有所调整。</li>
+    <li>对于目前的阶段性版本，开发和本地测试已经完成。</li>
+</ul>
+<h1>文档说明</h1>
+<ul>
+    <li>对服务器API文档有任何疑问，请联系服务器代码作者孙博宇 邮箱：cielosun@outlook.com qq:632898354。</li>
+    <li>本文档中，req为必须请求参数，creq为可选请求参数，res为返回参数, eq为请求例子。</li>
+    <li>本文档中{token}这种格式表示从服务器获取的某个变量。例如：<a href="http://ecs.jimstar.top:8080/Wear_war/api/64d2915eb0a54e2b93bcdef71b812961/data%EF%BC%8C%E5%85%B6%E4%B8%AD64d2915eb0a54e2b93bcdef71b812961%E5%AF%B9%E5%BA%94%7Btoken%7D%EF%BC%8C%E8%AF%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%9C%A8%E7%99%BB%E5%BD%95/%E6%B3%A8%E5%86%8C%E6%93%8D%E4%BD%9C%E6%97%B6%E5%8F%AF%E4%BB%A5%E4%BB%8E%E5%93%8D%E5%BA%94%E4%B8%AD%E8%8E%B7%E5%8F%96%E3%80%82">http://ecs.jimstar.top:8080/Wear_war/api/64d2915eb0a54e2b93bcdef71b812961/data，其中64d2915eb0a54e2b93bcdef71b812961对应{token}，该字符串在登录/注册操作时可以从响应中获取。</a></li>
+</ul>
+<p>请求样例：
+    对于多个属性：</p>
+<pre class="hljs"><code><div>{
+	<span class="hljs-attr">"accountNumber"</span>:<span class="hljs-string">"002"</span>,
+	<span class="hljs-attr">"password"</span>:<span class="hljs-string">"hahaschool"</span>,
+	<span class="hljs-attr">"userName"</span>:<span class="hljs-string">"CieloSun"</span>,
+	<span class="hljs-attr">"phone"</span>:<span class="hljs-string">"132xxxxxxxx"</span>,
+	<span class="hljs-attr">"relativeName"</span>:<span class="hljs-string">"Wendy"</span>,
+	<span class="hljs-attr">"relativePhone"</span>:<span class="hljs-string">"188xxxxxxxx"</span>,
+	<span class="hljs-attr">"email"</span>:<span class="hljs-string">"cielosun@xxxxxx.com"</span>
+}
+</div></code></pre>
+<p>对于单个属性：</p>
+<pre class="hljs"><code><div>{
+	<span class="hljs-attr">"accountNumber"</span>:<span class="hljs-string">"002"</span>
+}
+</div></code></pre>
+<h1>用户管理部分</h1>
+<h2>/api/token</h2>
+<p>method:POST</p>
+<p>通过用户名和密码进行登录。</p>
+<p>req:</p>
+<ul>
+    <li>String accountNumber</li>
+    <li>String password</li>
+</ul>
+<p>res:</p>
+<ul>
+    <li>String token</li>
+</ul>
+<h2>/api/user</h2>
+<p>method:POST</p>
+<p>向数据库添加用户。</p>
+<p>req:</p>
+<ul>
+    <li>String accountNumber</li>
+    <li>String password</li>
+</ul>
+<p>creq:</p>
+<ul>
+    <li>String userName</li>
+    <li>String phone</li>
+    <li>String relativeName</li>
+    <li>String relativePhone</li>
+    <li>String email</li>
+</ul>
+<p>res:</p>
+<ul>
+    <li>String token</li>
+</ul>
+<h2>/api/{token}</h2>
+<p>method:PUT</p>
+<p>更改当前用户数据。</p>
+<p>creq:</p>
+<ul>
+    <li>String newPassword</li>
+    <li>String userName</li>
+    <li>String phone</li>
+    <li>String relativeName</li>
+    <li>String relativePhone</li>
+    <li>String email</li>
+</ul>
+<h2>/api/{token}</h2>
+<p>method:GET</p>
+<p>显示当前用户的用户数据。</p>
+<p>res:</p>
+<ul>
+    <li>一个名为user的对象，其中属性为:</li>
+</ul>
+<ol>
+    <li>String accountNumber 用户账号</li>
+    <li>String userName 用户名</li>
+    <li>String phone 用户电话</li>
+    <li>String relativeName 用户亲属名</li>
+    <li>String relativePhone 用户亲属电话</li>
+    <li>String email 用户email</li>
+</ol>
+<p>示例：</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"user"</span>:{<span class="hljs-attr">"accountNumber"</span>:<span class="hljs-string">"002"</span>,
+            <span class="hljs-attr">"userName"</span>:<span class="hljs-string">"Boris"</span>,
+            <span class="hljs-attr">"phone"</span>:<span class="hljs-string">"132xxxxxxxx"</span>,
+            <span class="hljs-attr">"relativeName"</span>:<span class="hljs-string">"Wendy"</span>,
+            <span class="hljs-attr">"relativePhone"</span>:<span class="hljs-string">"188xxxxxxxx"</span>,
+            <span class="hljs-attr">"email"</span>:<span class="hljs-string">"cielosun@xxxxxx.com"</span>,
+            <span class="hljs-attr">"password"</span>:<span class="hljs-literal">null</span>}
+}
+</div></code></pre>
+<h2>/api/{token}</h2>
+<p>method:DELETE</p>
+<p>登出。</p>
+<h2>/api/{token}/user</h2>
+<p>mehod:DELETE</p>
+<p>删除当前用户。</p>
+<h1>数据测量部分</h1>
+<p>以下若说明为measure对象，则其结构为：</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"accountNumber"</span>:<span class="hljs-string">"002"</span>,
+    <span class="hljs-attr">"commitTime"</span>:<span class="hljs-number">1492659233000</span>,
+    <span class="hljs-attr">"device"</span>:<span class="hljs-string">"BE-83-85-13-EB-1D"</span>,
+    <span class="hljs-attr">"step"</span>:<span class="hljs-number">386</span>,
+    <span class="hljs-attr">"distance"</span>:<span class="hljs-number">10</span>,
+    <span class="hljs-attr">"heart"</span>:<span class="hljs-number">70</span>,
+    <span class="hljs-attr">"id"</span>:<span class="hljs-number">1</span>
+}
+</div></code></pre>
+<p>各属性的类型为：</p>
+<ul>
+    <li>String accountNumber 用户账号</li>
+    <li>Long commitTime 由时间戳转换而成的UNIX毫秒数</li>
+    <li>String device 设备MAC</li>
+    <li>Integer step 步数</li>
+    <li>Integer distance 距离（单位：米）</li>
+    <li>Integer heart 心率</li>
+    <li>int id 自动生成，不需要调用</li>
+</ul>
+<p>以下若说明为measures列表，则其结构为：</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"measures"</span>:[
+                    {
+                        <span class="hljs-attr">"accountNumber"</span>:<span class="hljs-string">"002"</span>,
+                        <span class="hljs-attr">"commitTime"</span>:<span class="hljs-number">1492659233000</span>,
+                        <span class="hljs-attr">"device"</span>:<span class="hljs-string">"BE-83-85-13-EB-1D"</span>,
+                        <span class="hljs-attr">"step"</span>:<span class="hljs-number">386</span>,
+                        <span class="hljs-attr">"distance"</span>:<span class="hljs-number">10</span>,
+                        <span class="hljs-attr">"heart"</span>:<span class="hljs-number">70</span>,
+                        <span class="hljs-attr">"id"</span>:<span class="hljs-number">1</span>
+                    },
+                    {
+                        <span class="hljs-attr">"accountNumber"</span>:<span class="hljs-string">"002"</span>,
+                        <span class="hljs-attr">"commitTime"</span>:<span class="hljs-number">1492661406000</span>,
+                        <span class="hljs-attr">"device"</span>:<span class="hljs-string">"BC-83-85-13-EA-1C"</span>,
+                        <span class="hljs-attr">"step"</span>:<span class="hljs-number">429</span>,
+                        <span class="hljs-attr">"distance"</span>:<span class="hljs-number">11</span>,
+                        <span class="hljs-attr">"heart"</span>:<span class="hljs-number">65</span>,
+                        <span class="hljs-attr">"id"</span>:<span class="hljs-number">2</span>
+                    }
+                ]
+}
+</div></code></pre>
+<p>对于所有时间请求，请以UNIX毫秒数（例如：1492661406000）的形式发送。</p>
+<h2>/api/{token}/data</h2>
+<p>method:GET</p>
+<p>获取当前用户某段时间的所有数据，按commitTime正序排序。</p>
+<ol>
+    <li>若无fromTimeMills属性和toTimeMills属性，则直接返回全部数据。</li>
+    <li>若无fromTimeMills属性，则返回截至toTimeMills的全部数据。</li>
+    <li>若无toTimeMills属性，则从fromTimeMills到当前时间的所有数据。</li>
+    <li>若有fromTimeMills属性和toTimeMills属性，则返回从fromTimeMills到toTimeMills之间的所有数据。</li>
+</ol>
+<p>creq:</p>
+<ul>
+    <li>Long fromTimeMills</li>
+    <li>Long toTimeMills</li>
+</ul>
+<p>res:</p>
+<ul>
+    <li>名为measures的measure对象列表。</li>
+</ul>
+<p>eq:</p>
+<ul>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?fromTimeMills=1492588971000">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?fromTimeMills=1492588971000</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?toTimeMills=1492675371000">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?toTimeMills=1492675371000</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?fromTimeMills=1492588971000&amp;toTimeMills=1492675371000">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/data?fromTimeMills=1492588971000&amp;toTimeMills=1492675371000</a></li>
+</ul>
+<h2>/api/{token}/date</h2>
+<p>method:GET</p>
+<p>获取当前用户某日的所有数据，按commitTime正序排序。若无timeMills，则返回今日的所有数据。</p>
+<p>creq:</p>
+<ul>
+    <li>Long timeMills</li>
+</ul>
+<p>res:</p>
+<ul>
+    <li>名为measures的measure对象列表。</li>
+</ul>
+<p>eq:</p>
+<ul>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/54b1ee63548d4bc3987e206c3ed6ff79/date">http://ecs.jimstar.top:8080/Wear_war/api/54b1ee63548d4bc3987e206c3ed6ff79/date</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/54b1ee63548d4bc3987e206c3ed6ff79/date?timeMills=1492588971000">http://ecs.jimstar.top:8080/Wear_war/api/54b1ee63548d4bc3987e206c3ed6ff79/date?timeMills=1492588971000</a></li>
+</ul>
+<h2>/api/{token}/latest</h2>
+<p>method:GET</p>
+<p>获取当前用户某段日期中的每天的最新的数据，按commitTime正序排序。</p>
+<ol>
+    <li>若无fromTimeMills属性和toTimeMills属性，则直接返回最新的一条数据。</li>
+    <li>若无fromTimeMills属性，则返回从toTimeMills日期一年前截至toTimeMills日期的每天的最新一条数据。</li>
+    <li>若无toTimeMills属性，则从fromTimeMills日期到今日的最新一条数据。</li>
+    <li>若有fromTimeMills属性和toTimeMills属性，则返回从fromTimeMills日期到toTimeMills日期之间的最新一条数据。</li>
+</ol>
+<p>creq:</p>
+<ul>
+    <li>Long fromTimeMills</li>
+    <li>Long toTimeMills</li>
+</ul>
+<p>res:</p>
+<ul>
+    <li>名为measures的measure对象列表。</li>
+</ul>
+<p>eq:</p>
+<ul>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?fromTimeMills=1492588971000">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?fromTimeMills=1492588971000</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?toTimeMills=1492675371000">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?toTimeMills=1492675371000</a></li>
+    <li><a href="http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?fromTimeMills=1492588971000&amp;toTimeMills=1492675371000">http://ecs.jimstar.top:8080/Wear_war/api/4d44e15928c74877b33817d8e91605ad/latest?fromTimeMills=1492588971000&amp;toTimeMills=1492675371000</a></li>
+</ul>
+<h2>/api/{token}</h2>
+<p>method:POST</p>
+<p>以当前token身份向服务器存储一组数据。</p>
+<p>req:</p>
+<ul>
+    <li>Long commitTime</li>
+    <li>String device</li>
+</ul>
+<p>creq:</p>
+<ul>
+    <li>Integer step</li>
+    <li>Integer distance</li>
+    <li>Integer heart</li>
+</ul>
+
+</body></html>

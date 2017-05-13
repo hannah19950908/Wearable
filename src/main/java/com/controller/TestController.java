@@ -36,10 +36,9 @@ public class TestController {
     public String testTimeCost(@PathVariable String token, @RequestParam(required = false) Long timeMills) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
-        String s;
         LocalTime startTime = LocalTime.now();
-        if (timeMills == null) s = measureService.findTodayDataByAccountNumber(accountNumber);
-        else s = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
+        if (timeMills == null) measureService.findTodayDataByAccountNumber(accountNumber);
+        else measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
         Long useTime = LocalTime.now().toNanoOfDay() - startTime.toNanoOfDay();
         Map map = new HashMap();
         map.put("costTimeInMiili", useTime / 1000000);
@@ -50,16 +49,15 @@ public class TestController {
             (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills, @RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        String s;
         LocalTime startTime = LocalTime.now();
         if (fromTimeMills == null && toTimeMills == null) {
-            s = measureService.findAllDataByAccountNumber(accountNumber);
+            measureService.findAllDataByAccountNumber(accountNumber);
         } else if (toTimeMills == null)
-            s = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
+            measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
         else if (fromTimeMills == null)
-            s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
+            measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
         else
-            s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
+            measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
         Long useTime = LocalTime.now().toNanoOfDay() - startTime.toNanoOfDay();
         Map map = new HashMap();
         map.put("costTimeInMiili", useTime / 1000000);

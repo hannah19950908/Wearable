@@ -144,7 +144,7 @@ res:
             "relativeName":"Wendy",
             "relativePhone":"188xxxxxxxx",
             "email":"cielosun@xxxxxx.com",
-            "password":null},
+            "password":null}
 }
 ```
 
@@ -205,7 +205,7 @@ mehod:DELETE
                         "heart":65,
                         "id":2
                     }
-                ],
+                ]
 }
 ```
 
