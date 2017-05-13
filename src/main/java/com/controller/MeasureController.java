@@ -3,7 +3,7 @@ package com.controller;
 import com.service.MeasureService;
 import com.service.TokenService;
 import com.util.JSONUtils;
-import com.util.ListToMapUtils;
+import com.util.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +29,10 @@ public class MeasureController {
     @RequestMapping({"{token}/date"})
     public String getByDate(@PathVariable String token, @RequestParam(required = false) Long timeMills) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        List list;
-        if (timeMills == null) list = measureService.findTodayDataByAccountNumber(accountNumber);
-        else list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
-        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
+        String s;
+        if (timeMills == null) s = measureService.findTodayDataByAccountNumber(accountNumber);
+        else s = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
+        return "{\"meansures\":"+s+"}";
     }
 
     @RequestMapping({"{token}/latest"})
@@ -50,7 +50,7 @@ public class MeasureController {
             list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber, new Timestamp(fromTimeMills), new Timestamp(System.currentTimeMillis()));
         else
             list = measureService.findTheLatestOfDateByAccountNumberAndDateRange(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
+        return JSONUtils.toJSON(MapUtils.toMap(list));
     }
 
     @RequestMapping({"{token}/data"})
@@ -58,16 +58,16 @@ public class MeasureController {
             (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills, @RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        List list;
+        String s;
         if (fromTimeMills == null && toTimeMills == null) {
-            list = measureService.findAllDataByAccountNumber(accountNumber);
+            s = measureService.findAllDataByAccountNumber(accountNumber);
         } else if (toTimeMills == null)
-            list = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
+            s = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
         else if (fromTimeMills == null)
-            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
+            s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
         else
-            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
+            s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
+        return "{\"meansures\":"+s+"}";
     }
 
     @RequestMapping(value = "{token}", method = RequestMethod.POST)

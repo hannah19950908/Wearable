@@ -2,7 +2,8 @@ package com.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.collections.*;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * Created by 63289 on 2017/2/25.
  */
+@Component
 public class JSONUtils {
     static ObjectMapper objectMapper = new ObjectMapper();
 

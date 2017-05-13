@@ -7,12 +7,12 @@ import java.util.*;
 /**
  * Created by 63289 on 2017/4/19.
  */
-public class ListToMapUtils {
-    public static Map ListToMap(List list)throws Exception{
+public class MapUtils {
+    public static Map toMap(List list)throws Exception{
         Map map=new HashMap();
-        return ListToMap(map,list);
+        return toMap(map,list);
     }
-    public static Map ListToMap(Map map,List list)throws Exception{
+    public static Map toMap(Map map, List list)throws Exception{
         if(list==null||list.isEmpty()){
             throw new SQLNotFoundException();
         }else{

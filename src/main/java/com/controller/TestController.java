@@ -5,7 +5,7 @@ import com.service.MeasureService;
 import com.service.TestService;
 import com.service.TokenService;
 import com.util.JSONUtils;
-import com.util.ListToMapUtils;
+import com.util.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -36,38 +36,34 @@ public class TestController {
     public String testTimeCost(@PathVariable String token, @RequestParam(required = false) Long timeMills) throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
         if (accountNumber == null) throw new TokenException();
-        List list;
+        String s;
         LocalTime startTime = LocalTime.now();
-        if (timeMills == null) list = measureService.findTodayDataByAccountNumber(accountNumber);
-        else list = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
+        if (timeMills == null) s = measureService.findTodayDataByAccountNumber(accountNumber);
+        else s = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
         Long useTime = LocalTime.now().toNanoOfDay() - startTime.toNanoOfDay();
         Map map = new HashMap();
         map.put("costTimeInMiili", useTime / 1000000);
-        map.put("objectAmount",list.size());
-        if (useTime > 0) return JSONUtils.toJSON(map);
-        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
+        return JSONUtils.toJSON(map);
     }
     @RequestMapping({"{token}/data/time"})
     public String testTimeCostLikeData
             (@PathVariable String token, @RequestParam(required = false) Long fromTimeMills, @RequestParam(required = false) Long toTimeMills)
             throws Exception {
         String accountNumber = tokenService.getAccountNumber(token);
-        List list;
+        String s;
         LocalTime startTime = LocalTime.now();
         if (fromTimeMills == null && toTimeMills == null) {
-            list = measureService.findAllDataByAccountNumber(accountNumber);
+            s = measureService.findAllDataByAccountNumber(accountNumber);
         } else if (toTimeMills == null)
-            list = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
+            s = measureService.findByAccountNumberAndFromTime(accountNumber, new Timestamp(fromTimeMills));
         else if (fromTimeMills == null)
-            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
+            s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
         else
-            list = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
+            s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
         Long useTime = LocalTime.now().toNanoOfDay() - startTime.toNanoOfDay();
         Map map = new HashMap();
         map.put("costTimeInMiili", useTime / 1000000);
-        map.put("objectAmount",list.size());
-        if (useTime > 0) return JSONUtils.toJSON(map);
-        return JSONUtils.toJSON(ListToMapUtils.ListToMap(list));
+        return JSONUtils.toJSON(map);
     }
     @RequestMapping("{token}/random/{number}")
     public void generateData(@PathVariable String token, @PathVariable Integer number) throws Exception {

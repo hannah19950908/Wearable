@@ -1,7 +1,7 @@
 package com.util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class IteratorUtils {
     public static List toList(Iterator iterator){
-        List list=new ArrayList();
+        List list=new LinkedList();
         while (iterator.hasNext()){
             list.add(iterator.next());
         }

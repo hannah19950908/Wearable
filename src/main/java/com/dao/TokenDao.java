@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,16 +22,18 @@ public class TokenDao {
     }
 
     public void put(String token, String accountNumber) {
-        redisTemplate.boundValueOps(token).set(accountNumber,validTime,TimeUnit.HOURS);
+        redisTemplate.opsForValue().set(token,accountNumber,validTime,TimeUnit.HOURS);
     }
 
     public String get(String token) {
-        return redisTemplate.opsForValue().get(token);
+        String accountNumber = redisTemplate.opsForValue().get(token);
+        put(token,accountNumber);
+        return accountNumber;
     }
 
-    public Boolean hasCache(String accountNumber){
-        if(redisTemplate.opsForValue().get(accountNumber)==null){
-            redisTemplate.boundValueOps(accountNumber).set("true",cacheLiveTime,TimeUnit.MINUTES);
+    public Boolean hasCache(String token){
+        if(redisTemplate.opsForValue().get(token)==null){
+            redisTemplate.boundValueOps(token).set("value",cacheLiveTime,TimeUnit.MINUTES);
             return false;
         }
         return true;

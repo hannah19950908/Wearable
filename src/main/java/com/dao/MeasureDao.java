@@ -1,7 +1,7 @@
 package com.dao;
 
 import com.entity.MeasureEntity;
-import com.util.IteratorUtils;
+import com.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,12 +18,10 @@ import java.util.List;
 @Transactional
 public class MeasureDao {
     private final HibernateTemplate hibernateTemplate;
-    private final TokenDao tokenDao;
 
     @Autowired
-    public MeasureDao(HibernateTemplate hibernateTemplate, TokenDao tokenDao) {
+    public MeasureDao(HibernateTemplate hibernateTemplate) {
         this.hibernateTemplate = hibernateTemplate;
-        this.tokenDao = tokenDao;
     }
 
     public void add(MeasureEntity measureEntity) {
@@ -36,39 +34,39 @@ public class MeasureDao {
         }
     }
 
-    public List findByAccountNumber(String accountNumber) {
+    public String findByAccountNumber(String accountNumber, Boolean visited) throws Exception {
         String queryString = "from MeasureEntity where accountNumber=? order by commitTime,id";
         Object[] objects = new Object[]{accountNumber};
-        return findListByAccountNumberAndQueryStringAndObjects(accountNumber, queryString, objects);
+        return findListByAccountNumberAndQueryStringAndObjects(accountNumber, visited, queryString, objects);
     }
 
-    public List findByAccountNumberAndTime(String accountNumber, Timestamp fromTime, Timestamp toTime) {
+    public String findByAccountNumberAndTime(String accountNumber, Boolean visited, Timestamp fromTime, Timestamp toTime) throws Exception {
         String queryString = "from MeasureEntity where accountNumber=? and commitTime between ? and ? order by commitTime";
         Object[] objects = new Object[]{accountNumber, fromTime, toTime};
-        return findListByAccountNumberAndQueryStringAndObjects(accountNumber, queryString, objects);
+        return findListByAccountNumberAndQueryStringAndObjects(accountNumber, visited, queryString, objects);
     }
 
-    public MeasureEntity findTheLatestByAccountNumberAndTime(String accountNumber, Timestamp fromTime, Timestamp toTime) {
+    public MeasureEntity findTheLatestByAccountNumberAndTime(String accountNumber, Boolean visited, Timestamp fromTime, Timestamp toTime) {
         String queryString = "from MeasureEntity where commitTime in " +
                 "(select max(commitTime) from MeasureEntity where accountNumber=? and commitTime between ? and ?)";
         Object[] objects = new Object[]{accountNumber, fromTime, toTime};
-        return findByAccountNumberAndQueryStringAndObjects(accountNumber, queryString, objects);
+        return findByAccountNumberAndQueryStringAndObjects(accountNumber, visited, queryString, objects);
     }
 
-    public MeasureEntity findTheLatestByAccountNumber(String accountNumber) {
+    public MeasureEntity findTheLatestByAccountNumber(String accountNumber, Boolean visited) {
         String queryString = "from MeasureEntity where commitTime in (select max(commitTime) from MeasureEntity where accountNumber=?)";
         Object[] objects = new Object[]{accountNumber};
-        return findByAccountNumberAndQueryStringAndObjects(accountNumber, queryString, objects);
+        return findByAccountNumberAndQueryStringAndObjects(accountNumber, visited, queryString, objects);
     }
 
-    public MeasureEntity findTheFirstByAccountNumber(String accountNumber) {
+    public MeasureEntity findTheFirstByAccountNumber(String accountNumber, Boolean visited) {
         String queryString = "from MeasureEntity where commitTime in (select min(commitTime) from MeasureEntity where accountNumber=?)";
         Object[] objects = new Object[]{accountNumber};
-        return findByAccountNumberAndQueryStringAndObjects(accountNumber, queryString, objects);
+        return findByAccountNumberAndQueryStringAndObjects(accountNumber, visited, queryString, objects);
     }
 
-    private MeasureEntity findByAccountNumberAndQueryStringAndObjects(String accountNumber, String queryString, Object[] objects) {
-        if (tokenDao.hasCache(accountNumber)) {
+    private MeasureEntity findByAccountNumberAndQueryStringAndObjects(String accountNumber, Boolean visited, String queryString, Object[] objects) {
+        if (visited) {
             Iterator iterator = hibernateTemplate.iterate(queryString, objects);
             return iterator.hasNext() ? (MeasureEntity) iterator.next() : null;
         }
@@ -76,10 +74,13 @@ public class MeasureDao {
         return list.isEmpty() ? null : (MeasureEntity) list.get(0);
     }
 
-    private List findListByAccountNumberAndQueryStringAndObjects(String accountNumber, String queryString, Object[] objects) {
-        if (tokenDao.hasCache(accountNumber))
-            return IteratorUtils.toList(hibernateTemplate.iterate(queryString, objects));
-        return hibernateTemplate.find(queryString, objects);
+    private String findListByAccountNumberAndQueryStringAndObjects(String accountNumber, Boolean visited, String queryString, Object[] objects) throws Exception {
+        if (visited) {
+            Iterator iterator = hibernateTemplate.iterate(queryString, objects);
+            return JSONUtils.toJSON(iterator);
+        }
+        List list = hibernateTemplate.find(queryString, objects);
+        return JSONUtils.toJSON(list);
     }
 
     public void update(MeasureEntity measureEntity) {
