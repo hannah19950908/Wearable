@@ -32,7 +32,7 @@ public class MeasureController {
         String s;
         if (timeMills == null) s = measureService.findTodayDataByAccountNumber(accountNumber);
         else s = measureService.findByAccountNumberAndDate(accountNumber, new Timestamp(timeMills));
-        return "{\"meansures\":"+s+"}";
+        return "{\"measures\":"+s+"}";
     }
 
     @RequestMapping({"{token}/latest"})
@@ -67,7 +67,7 @@ public class MeasureController {
             s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(toTimeMills));
         else
             s = measureService.findByAccountNumberAndCommitTime(accountNumber, new Timestamp(fromTimeMills), new Timestamp(toTimeMills));
-        return "{\"meansures\":"+s+"}";
+        return "{\"measures\":"+s+"}";
     }
 
     @RequestMapping(value = "{token}", method = RequestMethod.POST)
